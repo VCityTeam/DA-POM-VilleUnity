@@ -1,4 +1,4 @@
-# DA_POM
+# DA-POM
 Supervisors:
 - Gilles GESQUIERE (Gilles.Gesquiere@univ-lyon2.fr)
 - Corentin GAUTIER (corentin.gautier@universite-lyon.fr)
