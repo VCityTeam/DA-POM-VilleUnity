@@ -1,4 +1,7 @@
 # DA-POM
+
+Dates butoirs : 28 mai rapport / 31 ami poster / 4 juin vidéo de vulgarisation
+
 Supervisors:
 - Gilles GESQUIERE (Gilles.Gesquiere@univ-lyon2.fr)
 - Corentin GAUTIER (corentin.gautier@universite-lyon.fr)
