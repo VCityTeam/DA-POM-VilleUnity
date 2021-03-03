@@ -17,10 +17,10 @@
  * GNU Lesser General Public License for more details.
 */
 ////////////////////////////////////////////////////////////////////////////////
-#include "tesselator.hpp"
+#include "Tesselator.hpp"
 //#include "CityModel.hpp"
-#include "citygml.hpp"
-#include "utils.hpp"
+#include "CityGML.hpp"
+#include "Utils.hpp"
 #include <string>
 #include <limits>
 #include <iterator>

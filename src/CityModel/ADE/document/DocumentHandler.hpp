@@ -7,9 +7,9 @@
 #define _DOCUMENTHANDLER_HPP_
 
 #include "../ADE.hpp"
-#include "documentObject.hpp"
-#include "reference.hpp"
-#include "tag.hpp"
+#include "DocumentObject.hpp"
+#include "Reference.hpp"
+#include "Tag.hpp"
 
 class DocumentHandler : public ADEHandler
 {

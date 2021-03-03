@@ -7,10 +7,10 @@
 #define _TEMPORALHANDLER_HPP_
 
 #include "../ADE.hpp"
-#include "version.hpp"
-#include "versionTransition.hpp"
-#include "transaction.hpp"
-#include "workspace.hpp"
+#include "Version.hpp"
+#include "VersionTransition.hpp"
+#include "Transaction.hpp"
+#include "Workspace.hpp"
 
 class TempHandler : public ADEHandler
 {

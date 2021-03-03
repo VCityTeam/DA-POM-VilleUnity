@@ -18,10 +18,10 @@
 #define __CITYGML_LINEARRING_HPP__
 ////////////////////////////////////////////////////////////////////////////////
 #include <vector>
-#include "object.hpp"
-#include "vecs.hpp"
-#include "envelope.hpp"
-#include "citygmltypes.hpp"
+#include "Object.hpp"
+#include "Vecs.hpp"
+#include "Envelope.hpp"
+#include "CityGMLTypes.hpp"
 //#include "citygml_export.h"
 #ifdef _MSC_VER                // Inhibit dll-interface warnings concerning
 #pragma warning(disable: 4251) // export problem on STL members

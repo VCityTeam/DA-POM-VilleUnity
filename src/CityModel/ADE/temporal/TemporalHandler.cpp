@@ -3,7 +3,7 @@
 // (Refer to accompanying file LICENSE.md or copy at
 //  https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html )
 
-#include "temporalHandler.hpp"
+#include "TemporalHandler.hpp"
 #include "../../Utils.hpp"
 #include "../../CityGML.hpp"
 

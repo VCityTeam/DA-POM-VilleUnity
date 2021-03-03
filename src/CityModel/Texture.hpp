@@ -17,8 +17,8 @@
 #ifndef __CITYGML_TEXTURE_HPP__
 #define __CITYGML_TEXTURE_HPP__
 ////////////////////////////////////////////////////////////////////////////////
-#include "appearance.hpp"
-#include "vecs.hpp"
+#include "Appearance.hpp"
+#include "Vecs.hpp"
 //#include "citygml_export.h"
 #ifdef _MSC_VER
 #pragma warning(disable: 4251) // VC++ DLL jejune complains on STL members

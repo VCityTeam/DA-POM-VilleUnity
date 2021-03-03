@@ -35,7 +35,7 @@
 #include <GL/glu.h>
 #endif
 
-#include "vecs.hpp"
+#include "Vecs.hpp"
 //#include "citygml_export.h"
 
 // GLU based polygon tesselator

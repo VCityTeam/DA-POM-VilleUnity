@@ -17,7 +17,7 @@
 #define __CITYGML_ENVELOPE_HPP__
 
 #include <ostream>
-#include "vecs.hpp"
+#include "Vecs.hpp"
 //#include "citygml_export.h"
 
 #ifdef _MSC_VER                // Inhibit dll-interface warnings concerning

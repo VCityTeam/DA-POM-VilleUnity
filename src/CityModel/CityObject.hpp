@@ -18,8 +18,8 @@
 #define __CITYGML_CITYOBJECT_HPP__
 
 #include <ostream>
-#include "object.hpp"
-#include "geometry.hpp"
+#include "Object.hpp"
+#include "Geometry.hpp"
 #include "URI.hpp"
 //#include "citygml_export.h"
 

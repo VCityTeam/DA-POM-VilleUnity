@@ -6,8 +6,8 @@
 #ifndef _VERSION_TRANSITION_HPP_
 #define _VERSION_TRANSITION_HPP_
 
-#include "transaction.hpp"
-#include "version.hpp"
+#include "Transaction.hpp"
+#include "Version.hpp"
 //#include "citygml_export.h"
 
 namespace temporal

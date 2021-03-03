@@ -4,8 +4,8 @@
 //  https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html )
 
 #include "ADE.hpp"
-#include "temporal/temporalHandler.hpp"
-#include "document/documentHandler.hpp"
+#include "temporal/TemporalHandler.hpp"
+#include "document/DocumentHandler.hpp"
 
 //  JE 17/02/2016: DISCARDED BECAUSE PROBLEMS WITH RECENT VERSIONS OF UBUNTU: 
 //instanciate the ADE Handler constructors map

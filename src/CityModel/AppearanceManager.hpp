@@ -18,12 +18,12 @@
 #define __CITYGML_APPEARANCEMANAGER_HPP__
 ////////////////////////////////////////////////////////////////////////////////
 #include <vector>
-#include "appearance.hpp"
-#include "texture.hpp"
-#include "georeferencedtexture.hpp"
-#include "material.hpp"
-#include "tesselator.hpp"
-#include "citygmltypes.hpp"
+#include "Appearance.hpp"
+#include "Texture.hpp"
+#include "GeoReferencedTexture.hpp"
+#include "Material.hpp"
+#include "Tesselator.hpp"
+#include "CityGMLTypes.hpp"
 ////////////////////////////////////////////////////////////////////////////////
 namespace citygml
 {

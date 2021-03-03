@@ -17,9 +17,9 @@
 #ifndef __CITYGML_GEOMETRY_HPP__
 #define __CITYGML_GEOMETRY_HPP__
 ////////////////////////////////////////////////////////////////////////////////
-#include "object.hpp"
-#include "envelope.hpp"
-#include "polygon.hpp"
+#include "Object.hpp"
+#include "Envelope.hpp"
+#include "Polygon.hpp"
 #include "../Modules/XMLParser/ParserParams.hpp"
 //#include "citygml_export.h"
 #include <vector>

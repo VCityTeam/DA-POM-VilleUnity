@@ -3,7 +3,7 @@
 // (Refer to accompanying file LICENSE.md or copy at
 //  https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html )
 
-#include "documentHandler.hpp"
+#include "DocumentHandler.hpp"
 #include "../../Utils.hpp"
 #include "../../CityGML.hpp"
 
@@ -12,7 +12,7 @@
 #include <libxml/xlink.h>
 #include <libxml/xpath.h>
 //#include <boost/algorithm/string.hpp>
-#include "../../object.hpp"
+#include "../../Object.hpp"
 
 DocumentHandler::DocumentHandler(void) :ADEHandler()
 {

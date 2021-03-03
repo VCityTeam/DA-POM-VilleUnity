@@ -6,9 +6,9 @@
 #ifndef DOCUMENTOBJECT_HPP
 #define DOCUMENTOBJECT_HPP
 
-#include "../../cityobject.hpp"
+#include "../../CityObject.hpp"
 #include <ctime>
-#include "tag.hpp"
+#include "Tag.hpp"
 
 namespace documentADE
 {

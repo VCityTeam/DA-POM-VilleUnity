@@ -17,7 +17,7 @@
 * GNU Lesser General Public License for more details.
 */
 
-#include "tesselator.hpp"
+#include "Tesselator.hpp"
 #ifndef WIN32
 #	include <stdint.h>
 #endif

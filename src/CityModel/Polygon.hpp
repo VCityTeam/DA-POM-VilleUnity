@@ -18,16 +18,16 @@
 #define __CITYGML_POLYGON_HPP__
 ////////////////////////////////////////////////////////////////////////////////
 #include <vector>
-#include "object.hpp"
-#include "vecs.hpp"
-#include "appearance.hpp"
-#include "appearancemanager.hpp"
-#include "material.hpp"
-#include "texture.hpp"
-#include "linearring.hpp"
-#include "geometry.hpp"
-#include "envelope.hpp"
-#include "citygmltypes.hpp"
+#include "Object.hpp"
+#include "Vecs.hpp"
+#include "Appearance.hpp"
+#include "AppearanceManager.hpp"
+#include "Material.hpp"
+#include "Texture.hpp"
+#include "LinearRing.hpp"
+#include "Geometry.hpp"
+#include "Envelope.hpp"
+#include "CityGMLTypes.hpp"
 //#include "citygml_export.h"
 #ifdef _MSC_VER                // Inhibit dll-interface warnings concerning
 #pragma warning(disable: 4251) // export problem on STL members

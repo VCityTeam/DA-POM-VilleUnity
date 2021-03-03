@@ -17,7 +17,7 @@
 #ifndef __CITYGML_APPEARANCE_HPP__
 #define __CITYGML_APPEARANCE_HPP__
 ////////////////////////////////////////////////////////////////////////////////
-#include "object.hpp"
+#include "Object.hpp"
 //#include "citygml_export.h"
 #ifdef _MSC_VER                // Inhibit dll-interface warnings concerning
 # pragma warning(disable:4251) // gdal-1.11.4 internals (cpl_string.h) when

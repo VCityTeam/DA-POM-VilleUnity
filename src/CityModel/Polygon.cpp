@@ -14,7 +14,7 @@
 * GNU Lesser General Public License for more details.
 */
 ////////////////////////////////////////////////////////////////////////////////
-#include "polygon.hpp"
+#include "Polygon.hpp"
 #include <fstream>
 
 #include <iterator> // MT 15/02/2016 (vs2015)
