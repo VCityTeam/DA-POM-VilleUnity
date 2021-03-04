@@ -29,13 +29,14 @@ Pour démarrer rapidement avec Visual Studio :
   * "Type de projet" : "Projet d'application console"
   * Configuration Debug : rien à rajouter
   * Configuration Release : rien à rajouter
+* Sélectionnez la configuration `x64`
 * Ensuite, Click droit sur le nom du projet > Propriétés
   * Sélectionnez "Répertoires VC++"
-    * Dans "Répertoires Include", rajoutez le chemin vers `./lib/libxml2-2.9.3/include/libxml2/`
-    * Dans "Répertoires de bibliothèques", rajoutez le chemin vers `./lib/libxml2-2.9.3/lib/`
+    * Dans "Répertoires Include", rajoutez le chemin ***absolu*** vers `./lib/libxml2-2.9.3/include/libxml2/`
+    * Dans "Répertoires de bibliothèques", rajoutez le chemin ***absolu*** vers `./lib/libxml2-2.9.3/lib/`
   * Sous "Éditeurs de liens", sélectionnez "entrée"
     * Dans "Dépendances supplémentaires", rajoutez `libxml2.lib` et `glu32.lib`
-* Sélectionnez la configuration `x64`
+* Rajoutez le chemin ***absolu*** vers `./lib/libxml2-2.9.3/bin/` dans la variable d'environnement `Path`
 * Pour passer des arguments en ligne de commande dans Visual Studio :
   * Click droit sur le nom du projet > Propriétés
   * Dans l'onglet "Débogage" > "Arguments de la commande" : mettre vos arguments (ex: emplacement de fichier .gml) en séparant les arguments par des espaces
