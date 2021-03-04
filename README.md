@@ -1,32 +1,26 @@
 # DA-POM
 
-Dates butoirs : 28 mai rapport / 31 mai poster / 4 juin vidéo de vulgarisation
-
 Supervisors:
 - Gilles GESQUIERE (Gilles.Gesquiere@univ-lyon2.fr)
 - Corentin GAUTIER (corentin.gautier@universite-lyon.fr)
 
-## Ville minecraft
-[Project specification](https://github.com/VCityTeam/DA-POM/blob/main/cdc_45_duval_11607235_ribeiro_11914838.pdf)
+## HowTo
 
-[Source code](https://github.com/VCityTeam/DA-POM-VilleMinecraft)
+* ### [Install](./INSTALL.md)
 
-Contributors : 
- - Corentin DUVAL
- - Andgel RIBEIRO
-## Ville Unity
-[Project specification](https://github.com/VCityTeam/DA-POM/blob/main/cdc_43_CHEMOUL_11500326_COMBAT_11608446.pdf)
+## Deadlines
 
-[Source code](https://github.com/VCityTeam/DA-POM-VilleUnity)
+|                        | Date        |
+| :---                   | :---:       |
+| Rapport                | 28 mai 2021 |
+| Poster                 | 31 mai 2021 |
+| Vidéo de vulgarisation | 4 juin 2021 |
+| Détails des rendus     | [Site web POM](https://perso.liris.cnrs.fr/sylvain.brandel/wiki/doku.php?id=ens:pom) |
 
-Contributors :
-- Victor COMBAT
-- Mickael CHEMOUL
-## Legonizer
-[Project specification](https://github.com/VCityTeam/DA-POM/blob/main/Cahier_des_charges_Legonizer.pdf)
+## Projects Info
 
-[Source code](https://github.com/VCityTeam/DA-POM-Legonizer)
-
-Contributors :
-- Julian SORRENTI
-- Rémi LHOSTE
+|               | Ville Minecraft                    | Ville Unity                        | Legonizer                        |
+| :---          | :---:                              | :---:                              | :---:                            |
+| Contributors  | Corentin DUVAL <br> Andgel RIBEIRO | Mickael CHEMOUL <br> Victor COMBAT | Julian SORRENTI <br> Rémi LHOSTE |
+| Project Spec  | [Project Specification](https://github.com/VCityTeam/DA-POM/blob/main/cdc_45_duval_11607235_ribeiro_11914838.pdf) | [Project Specification](https://github.com/VCityTeam/DA-POM/blob/main/cdc_43_CHEMOUL_11500326_COMBAT_11608446.pdf) | [Project Specification](https://github.com/VCityTeam/DA-POM/blob/main/Cahier_des_charges_Legonizer.pdf) |
+| Source code   | [Source code](https://github.com/VCityTeam/DA-POM-VilleMinecraft) | [Source code](https://github.com/VCityTeam/DA-POM-VilleUnity) | [Source code](https://github.com/VCityTeam/DA-POM-Legonizer) |
