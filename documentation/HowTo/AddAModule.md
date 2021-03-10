@@ -102,11 +102,11 @@ void CLI::processCmdLine()
 			else if (name == "--obj") {
 				
 			} 
-            // ADD THIS
-            else if (name == "--flag") { // Your flag argument here
-                // Be sure to call your function implemented in CityGMLTool.cpp
-                _citygmltool->myFunction( <my parameters> );
-            }
+		        // ADD THIS
+		        else if (name == "--flag") { // Your flag argument here
+				// Be sure to call your function implemented in CityGMLTool.cpp
+				_citygmltool->myFunction( <my parameters> );
+		    	}
 		}
 	}
 }
