@@ -6,7 +6,8 @@ Supervisors:
 
 ## HowTo
 
-* ### [Install](./INSTALL.md)
+* ### [Install](./documentation/HowTo/Install.md)
+* ### [Add a Module](./documentation/HowTo/AddAModule.md)
 
 ## Deadlines
 

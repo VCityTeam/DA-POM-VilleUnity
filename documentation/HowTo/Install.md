@@ -18,7 +18,7 @@ libxml2.lib
 glu32.lib
 ```
 
-#### Avec Visual Studio
+#### Avec Visual Studio (testé avec vs2017 & vs2019)
 
 Pour démarrer rapidement avec Visual Studio :
 * Ouvrir Visual Studio
