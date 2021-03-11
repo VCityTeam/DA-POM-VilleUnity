@@ -4,30 +4,11 @@ GMLtoOBJ::GMLtoOBJ(std::string name) : Module(name)
 {
 }
 
-int GMLtoOBJ::init(){
-    std::cout << "GMLtoOBJ::init()" << std::endl;
-
-    return 0;
-}
-
-// int GMLtoOBJ::init(){
-
-//     std::cout << "GMLtoOBJ::init(CityModel cModel)" << std::endl;
-
-//     this->_model = cModel;
-// }
-
-int GMLtoOBJ::run()
-{
-	std::cout << "GMLtoOBJ::run()" << std::endl;
-
-	return 0;
-}
-
  void GMLtoOBJ::createMyOBJ(const citygml::CityModel& cityModel){
     std::cout << "Debut des hostilites" << std::endl;
 	std::string output = "myObject.obj";
 	std::ofstream file(output);
+	
 	if(file){
 		file.clear();
 		file << "# Generated OBJ object from DA-POM project 2020 " << std::endl;
@@ -39,7 +20,7 @@ int GMLtoOBJ::run()
 		for (int i = 0; i < cityModel.getCityObjectsRoots().size(); i++)
 		{
 			for(int j = 0; j < cityModel.getCityObjectsRoots()[i]->getChildCount(); j++){
-				CityObject* obj = cityModel.getCityObjectsRoots()[i]->getChild(j);
+				citygml::CityObject* obj = cityModel.getCityObjectsRoots()[i]->getChild(j);
 				for(int k=0; k < obj->getGeometries().size();k++){
 					for(int l = 0; l<obj->getGeometry(k)->getPolygons().size();l++){ //faces
 						file << "# face " << i << " " << j << " " << k << " " << l << std::endl;

@@ -118,6 +118,7 @@ void CLI::processCmdLine()
 			}
 			else if (name == "--obj") {
 				//TODO: call function to convert to obj
+				_citygmltool->createOBJ();
 			}
 		}
 	}

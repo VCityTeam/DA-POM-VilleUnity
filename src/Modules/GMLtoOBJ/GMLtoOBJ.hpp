@@ -5,15 +5,13 @@
 #include <fstream>
 #include <math.h>
 #include "../Module.hpp"
-#include "../XMLParser/CityGMLHandlerLibXml2.hpp"
+//#include "../XMLParser/CityGMLHandlerLibXml2.hpp"
+#include "../../CityModel/CityModel.hpp"
 
 class GMLtoOBJ : public Module
 {
 public:
     GMLtoOBJ(std::string name);
-    int init();
-    // int init();
-    int run();
 
      void createMyOBJ(const citygml::CityModel& cModel);
 
