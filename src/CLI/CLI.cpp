@@ -16,12 +16,6 @@ CLI::CLI(int argc, char* argv[])
 	_cliParams.push_back(CLIParam("--help", "Prints usage."));
 	_cliParams.push_back(CLIParam("--debug", "Turn on debug mode."));
 	_cliParams.push_back(CLIParam("--obj", "Convert a CityGML file into OBJ file.", std::vector<bool>({ 0 })));
-	//_cliParams.push_back(CLIParams("--obj", std::bind(&CityGMLTool::test, _citygmltool, std::placeholders::_1), "Convert a CityGML file into OBJ file.", std::vector<bool>({ 0 })));
-
-	/*_cliParams.push_back(CLIParams("--test1", &_citygmltool->test, "This is test1.", std::vector<bool>({ 1 })));
-	_cliParams.push_back(CLIParams("--test2", &_citygmltool->test));
-	_cliParams.push_back(CLIParams("--test3", &_citygmltool->test, "This is test3.", std::vector<bool>({ 1, 0, 1 })));
-	_cliParams.push_back(CLIParams("--test4", &_citygmltool->test, "This is test3.", std::vector<bool>({ 1, 1, 0, 0 })));*/
 
 }
 
@@ -117,7 +111,6 @@ void CLI::processCmdLine()
 				std::cout << "[NOT IMPLEMENTED YET] --debug" << std::endl;
 			}
 			else if (name == "--obj") {
-				//TODO: call function to convert to obj
 				_citygmltool->createOBJ();
 			}
 		}
