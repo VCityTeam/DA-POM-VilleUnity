@@ -29,6 +29,7 @@ void CLI::checkParams()
 		return;
 	}
 
+	std::cout << "..::Args::.." << std::endl;
 	for (int i = 0; i < _argc; i++)
 	{
 		std::cout << this->_argv.at(i) << " ";
@@ -44,6 +45,11 @@ void CLI::checkParams()
 
 		this->_citygmltool->parse(this->_argv[1]);
 	}
+
+	if (this->_argv[2] == "-o") {
+		this->_citygmltool->createOBJ();
+	}
+
 }
 
 void CLI::usage()

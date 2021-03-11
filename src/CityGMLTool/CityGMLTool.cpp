@@ -3,6 +3,7 @@
 CityGMLTool::CityGMLTool()
 {
 	this->modules.push_back(new XMLParser("xmlparser"));
+	this->modules.push_back(new GMLtoOBJ("objcreator"));
 }
 
 CityGMLTool::~CityGMLTool()
@@ -55,4 +56,15 @@ void CityGMLTool::parse(std::string& filename)
 	{
 		std::cout << cityModel->getCityObjectsRoots()[i]->getTypeAsString() << std::endl;
 	}
+}
+
+void CityGMLTool::createOBJ(){
+	 GMLtoOBJ* mOBJconverter = static_cast<GMLtoOBJ*>(this->findModuleByName("objcreator"));
+	 if(cityModel){
+	 	mOBJconverter->createMyOBJ(*cityModel);
+		std::cout << "OBJconverter:.............................:[OK]" << std::endl;
+	 }else {
+	 	std::cout << "OBJconverter:.............................:[FAILED]" << std::endl;
+	 	return;
+	 }
 }

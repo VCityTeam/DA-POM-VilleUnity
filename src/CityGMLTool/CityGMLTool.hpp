@@ -5,6 +5,7 @@
 #include <vector>
 #include "../Modules/Module.hpp"
 #include "../Modules/XMLParser/XMLParser.hpp"
+#include "../Modules/GMLtoOBJ/GMLtoOBJ.hpp"
 
 class CityGMLTool
 {
@@ -14,6 +15,7 @@ public:
 
 	Module* findModuleByName(const std::string name);
 	void parse(std::string& filename);
+	void createOBJ();
 
 private:
 	std::vector<Module*> modules;
