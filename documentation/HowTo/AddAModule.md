@@ -28,7 +28,7 @@ Inside [CityGMLTool.cpp](../../src/CityGMLTool/CityGMLTool.cpp), create a new in
 CityGMLTool::CityGMLTool()
 {
 	this->modules.push_back(new XMLParser("xmlparser")); // XMLParser exemple
-    this->modules.push_back(new MyModule("modulename")); // Add your module
+    	this->modules.push_back(new MyModule("modulename")); // Add your module
 }
 ```
 
