@@ -9,9 +9,6 @@ class Module
 public:
 	Module(std::string name);
 
-	virtual int init() = 0;
-	virtual int run() = 0;
-
 	std::string getName();
 
 protected:

@@ -56,9 +56,6 @@ class XMLParser : public Module
 {
 public:
 	XMLParser(std::string name);
-	int init();
-	int init(std::string filename);
-	int run();
 
 	CityModel* load(const std::string& fname, ParserParams& params);
 

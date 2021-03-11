@@ -4,33 +4,9 @@ XMLParser::XMLParser(std::string name) : Module(name)
 {
 }
 
-int XMLParser::init()
-{
-	std::cout << "XMLParser::init()" << std::endl;
-
-	return 0;
-}
-
-int XMLParser::init(std::string filename)
-{
-	std::cout << "XMLParser::init(std::string filename)" << std::endl;
-
-	std::cout << "filename: " << filename << std::endl;
-
-	this->_filename = filename;
-
-	return 0;
-}
-
-int XMLParser::run()
-{
-	std::cout << "XMLParser::run()" << std::endl;
-
-	return 0;
-}
-
 CityModel * XMLParser::load(const std::string & fname, ParserParams & params)
 {
+	this->_filename = fname;
 	params.m_basePath = fname.substr(0, fname.find_last_of('/') + 1);
 	params.m_basePath.push_back('/');
 
