@@ -13,7 +13,10 @@ class GMLtoOBJ : public Module
 public:
     GMLtoOBJ(std::string name);
 
-     void createMyOBJ(const citygml::CityModel& cModel);
+    void createMyOBJ(const citygml::CityModel& cModel, const std::string& filename);
+    std::string getFilename(const std::string& filename);
+
+    void loadBuilding(const citygml::CityModel& cityModel, std::ofstream file);
 
     ~GMLtoOBJ();
 private:
