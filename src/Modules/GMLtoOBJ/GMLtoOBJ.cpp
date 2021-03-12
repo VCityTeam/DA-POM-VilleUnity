@@ -9,7 +9,7 @@ GMLtoOBJ::GMLtoOBJ(std::string name) : Module(name)
 	std::string cleanFileName = getFilename(filename);
 	std::string output = "OBJoutput/"+ cleanFileName + ".obj";
 	std::ofstream file(output);
-	
+		
 	if(file){
 		file.clear();
 		file << "# Generated OBJ object from DA-POM project 2020 " << std::endl;
@@ -22,8 +22,12 @@ GMLtoOBJ::GMLtoOBJ(std::string name) : Module(name)
 		double boundingY = cityModel.getEnvelope().getLowerBound().y;
 		double boundingZ = cityModel.getEnvelope().getLowerBound().z;
 
+		std::cout << "DEBUG" << std::endl;
+		std::cout << cityModel.getCityObjectsMap().size() << std::endl;
+		std::cout << cityModel.getCityObjectsRoots()[0]->getType() << std::endl;
 
-		for (int i = 0; i < cityModel.getCityObjectsRoots().size(); i++)
+
+		/*for (int i = 0; i < cityModel.getCityObjectsRoots().size(); i++)
 		{
 			for (int j = 0; j < cityModel.getCityObjectsRoots()[i]->getChildCount(); j++) {
 				citygml::CityObject* obj = cityModel.getCityObjectsRoots()[i]->getChild(j);
@@ -50,8 +54,66 @@ GMLtoOBJ::GMLtoOBJ(std::string name) : Module(name)
 					}
 				}
 			}
+		}*/
+		for (int i = 0; i < cityModel.getCityObjectsRoots().size(); i++)
+		{
+			for (int j = 0; j < cityModel.getCityObjectsRoots()[i]->getChildCount(); j++) {
+				citygml::CityObject* obj = cityModel.getCityObjectsRoots()[i]->getChild(j);
+
+				std::cout << "////////////////// " << obj->getType() << std::endl;
+				std::cout << "////////////////// " << citygml::CityObjectsType::COT_BuildingPart << std::endl;
+
+				if(obj->getType() == citygml::CityObjectsType::COT_BuildingPart) {
+					for (int k = 0; k < obj->getChildren().size();k++) {
+						for (int l = 0; l < obj->getChildren()[k]->getGeometries().size();l++) { //faces
+							for (int m = 0; m < obj->getChildren()[k]->getGeometry(l)->getPolygons().size();m++) { //faces
+								int size = obj->getChildren()[k]->getGeometry(l)->getPolygons()[m]->getVertices().size();
+								for (int n = 0; n < size; n++) {
+									double mX = ((double)obj->getChildren()[k]->getGeometry(l)->getPolygons()[m]->getVertices()[n].x);
+									double mY = ((double)obj->getChildren()[k]->getGeometry(l)->getPolygons()[m]->getVertices()[n].y);
+									double mZ = ((double)obj->getChildren()[k]->getGeometry(l)->getPolygons()[m]->getVertices()[n].z);
+									//std::cout << "v " << mX << " " << mY << " " << mZ << std::endl;
+									file << std::fixed << "v " << mX << " ";
+									file << std::fixed << mY << " ";
+									file << std::fixed << mZ << std::endl;
+								}
+								vertexCounter += size;
+								file << "f";
+								for (int m = 0; m < size;m++) {
+									int temp = (vertexCounter - ((size - 1) - m));
+									file << " " << temp;
+								}
+								file << std::endl << std::endl;
+							}
+						}
+					}
+				}
+				else {
+					for (int k = 0; k < obj->getGeometries().size();k++) {
+						for (int l = 0; l < obj->getGeometry(k)->getPolygons().size();l++) { //faces
+							int size = obj->getGeometry(k)->getPolygons()[l]->getVertices().size();
+
+							for (int m = 0; m < size;m++) {
+								double mX = ((double)obj->getGeometry(k)->getPolygons()[l]->getVertices()[m].x) - boundingX;
+								double mY = ((double)obj->getGeometry(k)->getPolygons()[l]->getVertices()[m].y) - boundingY;
+								double mZ = ((double)obj->getGeometry(k)->getPolygons()[l]->getVertices()[m].z) - boundingZ;
+
+								file << std::fixed << "v " << mX << " ";
+								file << std::fixed << mY << " ";
+								file << std::fixed << mZ << std::endl;
+							}
+							vertexCounter += size;
+							file << "f";
+							for (int m = 0; m < size;m++) {
+								int temp = (vertexCounter - ((size - 1) - m));
+								file << " " << temp;
+							}
+							file << std::endl << std::endl;
+						}
+					}
+				}
+			}
 		}
-	
 		file.close();
 	}else {
 	 	std::cout << "OBJconverter:.............................:[FAILED]" << std::endl;
@@ -79,4 +141,9 @@ std::string GMLtoOBJ::getFilename(const std::string& filename) {
 
 void GMLtoOBJ::loadBuilding(const citygml::CityModel& cityModel, std::ofstream file) {
 	//TODO loader for only 1 buidling
+}
+
+void GMLtoOBJ::load(const citygml::CityModel& cityModel, std::ofstream file) {
+	//TODO loader for total
+	
 }

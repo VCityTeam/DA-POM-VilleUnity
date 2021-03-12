@@ -17,6 +17,7 @@ public:
     std::string getFilename(const std::string& filename);
 
     void loadBuilding(const citygml::CityModel& cityModel, std::ofstream file);
+    void load(const citygml::CityModel& cityModel, std::ofstream file);
 
     ~GMLtoOBJ();
 private:
