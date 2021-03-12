@@ -14,12 +14,14 @@ public:
 	~CityGMLTool();
 
 	Module* findModuleByName(const std::string name);
-	void parse(std::string& filename);
+	void parse();
 	void createOBJ();
+	void setFileName(std::string& filename);
 
 private:
 	std::vector<Module*> modules;
 	CityModel* cityModel;
+	std::string filename;
 
 };
 
