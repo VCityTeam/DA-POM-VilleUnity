@@ -47,30 +47,50 @@ void CityGMLTool::parse()
 	}
 
 	std::cout << "PARSING:.............................:[OK]" << std::endl;
-	//std::cout << model->getroot()->getid() << std::endl;
 
-	std::cout << "city objects roots - size : " << cityModel->getCityObjectsRoots().size() << std::endl;
-	for (int i = 0; i < cityModel->getCityObjectsRoots().size(); i++)
-	{
-		std::cout << (cityModel->getCityObjectsRoots()[i]->getTypeAsString()) << std::endl;
 
-		//std::cout << cityModel->getCityObjectsRoots()[i]->getChildCount() << std::endl;
-		for (int j = 0; j < cityModel->getCityObjectsRoots()[i]->getChildCount(); j++)
-		{
-			const CityObject* obj = cityModel->getCityObjectsRoots()[i]->getChild(j);
-			
-			std::cout << "\t" << (obj->getTypeAsString()) << std::endl;
-			//std::cout << obj->getGeometries().size() << std::endl;
+	/*
+		==============================================
+		::::::::::::::::: DEBUG PART :::::::::::::::::
+		==============================================
+	*/
 
-			/*std::cout << obj->getGeometry(0)->getPolygons()[0]->getVertices()[0].x << std::endl;
-			std::cout << obj->getGeometry(0)->getPolygons()[0]->getVertices()[0].y << std::endl;
-			std::cout << obj->getGeometry(0)->getPolygons()[0]->getVertices()[0].z << std::endl;*/
-			/*for (int k = 0; k < obj->getGeometries().size(); k++)
-			{
-				std::cout << obj->getGeometry(k)->getPolygons().size() << std::endl;
-			}*/
-		}
-	}
+	//std::cout << "city objects roots - size : " << cityModel->getCityObjectsRoots().size() << std::endl;
+	//for (int i = 0; i < cityModel->getCityObjectsRoots().size(); i++)
+	//{
+	//	std::cout << (cityModel->getCityObjectsRoots()[i]->getTypeAsString()) << " ";
+	//	std::cout << cityModel->getCityObjectsRoots()[i]->getChildCount() << " children ";
+	//	std::cout << cityModel->getCityObjectsRoots()[i]->getGeometries().size() << " geometries" << std::endl;
+
+	//	// If CityObject type is "Bridge", they have no children so we don't need to go deeper
+	//	if (cityModel->getCityObjectsRoots()[i]->getType() == CityObjectsType::COT_Bridge) {
+	//		for (int geo = 0; geo < cityModel->getCityObjectsRoots()[i]->getGeometries().size(); geo++) {
+
+	//			const Geometry* geometry = cityModel->getCityObjectsRoots()[i]->getGeometry(geo);
+	//			std::cout << "\t " << *geometry << std::endl;
+	//		}
+	//	}
+	//	// If CityObject type is "Building", we need to go deeper
+	//	else if (cityModel->getCityObjectsRoots()[i]->getType() == CityObjectsType::COT_Building) {
+	//		for (int j = 0; j < cityModel->getCityObjectsRoots()[i]->getChildCount(); j++)
+	//		{
+	//			const CityObject* obj = cityModel->getCityObjectsRoots()[i]->getChild(j);
+
+	//			std::cout << "\t" << (obj->getTypeAsString()) << " - ";
+	//			std::cout << obj->getChildCount() << " children ";
+	//			std::cout << obj->getGeometries().size() << " geometries" << std::endl;
+
+	//			// If CityObject type is "BuildingPart", we need to go deeper
+	//			if (obj->getType() == CityObjectsType::COT_BuildingPart) {
+	//				for (int k = 0; k < obj->getChildren().size(); k++) {
+	//					std::cout << "\t\t" << obj->getChild(k)->getTypeAsString() << " - ";
+	//					std::cout << obj->getChild(k)->getChildCount() << " children ";
+	//					std::cout << obj->getChild(k)->getGeometries().size() << " geometries" << std::endl;
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 void CityGMLTool::createOBJ(){

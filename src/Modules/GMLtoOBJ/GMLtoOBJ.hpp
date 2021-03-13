@@ -5,7 +5,6 @@
 #include <fstream>
 #include <math.h>
 #include "../Module.hpp"
-//#include "../XMLParser/CityGMLHandlerLibXml2.hpp"
 #include "../../CityModel/CityModel.hpp"
 
 class GMLtoOBJ : public Module
@@ -16,12 +15,17 @@ public:
     void createMyOBJ(const citygml::CityModel& cModel, const std::string& filename);
     std::string getFilename(const std::string& filename);
 
-    void loadBuilding(const citygml::CityModel& cityModel, std::ofstream file);
-    void load(const citygml::CityModel& cityModel, std::ofstream file);
+	void processCityModel(const citygml::CityModel& cityModel);
+	void processCityObject(const citygml::CityObject& cityObject);
+	void processGeometries(const citygml::CityObject& cityObject);
 
-    ~GMLtoOBJ();
 private:
+	std::ofstream file;
 
+	int vertexCounter;
+	double boundingX;
+	double boundingY;
+	double boundingZ;
 };
 
 #endif // !GMLTOOBJ_HPP
