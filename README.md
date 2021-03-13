@@ -11,7 +11,7 @@ Supervisors:
 
 ## Modules
 
-* #### [GMLtoOBJ](./wiki/Module_GMLtoOBJ)
+* #### [GMLtoOBJ](https://github.com/VCityTeam/DA-POM/wiki/Module_GMLtoOBJ)
 
 ## Deadlines
 
