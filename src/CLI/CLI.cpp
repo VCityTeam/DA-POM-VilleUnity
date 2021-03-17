@@ -96,8 +96,7 @@ void CLI::parseCmdLine()
 void CLI::processCmdLine()
 {
 	// Parse the CityGML file
-	_citygmltool->setFileName(_gmlFilename);
-	_citygmltool->parse();
+	_citygmltool->parse(_gmlFilename);
 
 	// Process found arguments
 	for (int i = 0; i < _cliParams.size(); i++)
@@ -112,12 +111,16 @@ void CLI::processCmdLine()
 				std::cout << "[NOT IMPLEMENTED YET] --debug" << std::endl;
 			}
 			else if (name == "--obj") {
-				int i = system("mkdir OBJoutput");
-				if (i == 0) {
-					std::cout << "OBJoutput folder created..." << std::endl;
+				// Is there an optional parameter ?
+				if (_cliParams[i]._args.size() > 0) {
+					std::string arg = _cliParams[i]._args[0];
+					_citygmltool->createOBJ(_gmlFilename, arg);
 				}
-				//if (tolower(_cliParams[i]._args[0]) == "true") fileName = _cliParams[i]._args[0];
-				_citygmltool->createOBJ();
+				else {
+					// No optional parameter found
+					_citygmltool->createOBJ(_gmlFilename);
+				}
+				
 			}
 		}
 	}

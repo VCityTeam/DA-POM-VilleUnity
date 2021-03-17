@@ -4,17 +4,74 @@ GMLtoOBJ::GMLtoOBJ(std::string name) : Module(name)
 {
 }
 
- void GMLtoOBJ::createMyOBJ(const citygml::CityModel& cityModel,const std::string& filename){
+void GMLtoOBJ::processOutputLocation(std::string & arg)
+{
+	std::string toMatch = ".obj";
 
-	std::string cleanFileName = getFilename(filename);
-	std::string output = "OBJoutput/"+ cleanFileName + ".obj";
-	file = std::ofstream(output);
+	// 1. Test if arg is empty
+	if (arg.empty()) {
+		// Default procedure, output location : "output/obj/<filename>.obj"
+
+		// Create output directory
+		int cmdResult = system("mkdir output");
+		if (cmdResult == 0) {
+			std::cout << "[DIRECTORY CREATED] : 'output'." << std::endl;
+		}
+
+		// Create obj directory
+		cmdResult = system("cd output && mkdir obj");
+		if (cmdResult == 0) {
+			std::cout << "[DIRECTORY CREATED] : 'output/obj'." << std::endl;
+
+			outputLocation = "output/obj/" + eraseExtension(this->gmlFilename) + ".obj";
+		}
+		else { // already exist
+			outputLocation = "output/obj/" + eraseExtension(this->gmlFilename) + ".obj";
+		}
+	}
+	// 2. Test if arg is filename (.obj)
+	else if (arg.size() >= toMatch.size() && arg.compare(arg.size() - toMatch.size(), toMatch.size(), toMatch) == 0) {
+		// Output location is simply the argument provided
+		outputLocation = arg;
+	}
+	// 3. Test if it's a directory and test if it exists
+	else if (arg.back() == '/' || arg.back() == '\\') {
+		std::string cmd = "mkdir " + arg.substr(0, arg.size() - 1);
+		std::cout << "[COMMAND]: " << cmd << std::endl;
+		int cmdResult = system(cmd.c_str());
+		if (cmdResult == 0) { // Directory exist
+			std::cout << "[DIRECTORY FOUND]: '" << arg << "'." << std::endl;
+			// outputLocation = arg + <filename>.obj
+			outputLocation = arg.append(eraseExtension(this->gmlFilename).append(".obj"));
+		}
+		else { // Directory doesn't exist
+			std::cout << "[DIRECTORY] '" << arg << "' doesn't exist. Creating default 'output/obj'." << std::endl;
+
+			cmdResult = system("mkdir output");
+			if (cmdResult == 0) {
+				cmdResult = system("mkdir output/obj");
+				if (cmdResult == 0) {
+					std::cout << "[DIRECTORY CREATED] : 'output/obj'.";
+					
+					outputLocation = "output/obj/" + eraseExtension(this->gmlFilename) + ".obj";
+				}
+			}
+		}
+	}
+}
+
+ void GMLtoOBJ::createMyOBJ(const citygml::CityModel& cityModel, std::string argOutputLoc) {
+
+	processOutputLocation(argOutputLoc);
+	std::cout << "[OUTPUT LOCATION]: '" << outputLocation << "'" << std::endl;
+
+	file = std::ofstream(outputLocation);
 		
 	if(file){
 		file.clear();
 		file << "# Generated OBJ object from DA-POM project 2020 " << std::endl;
 		file << "# " << std::endl << std::endl;
-		file << "o " << cleanFileName << std::endl << std::endl;
+		file << "o " << eraseExtension(gmlFilename) << std::endl << std::endl;
 
 		vertexCounter = 0;
 
@@ -119,13 +176,15 @@ GMLtoOBJ::GMLtoOBJ(std::string name) : Module(name)
 		//	}
 		//}
 		file.close();
+
+		std::cout << "OBJconverter:.............................:[OK]" << std::endl;
 	}else {
-	 	std::cout << "OBJconverter:.............................:[FAILED]" << std::endl;
+	 	std::cout << "OBJconverter:.............................:[FAILED]: Problem with filepath: '" << outputLocation << "'" << std::endl;
 		return;
 	}
  }
 
-std::string GMLtoOBJ::getFilename(const std::string& filename) {
+std::string GMLtoOBJ::eraseExtension(const std::string& filename) {
 	std::string res = filename;
 	const size_t last_slash_idx = res.find_last_of("\\/");
 	if (std::string::npos != last_slash_idx)
@@ -140,6 +199,8 @@ std::string GMLtoOBJ::getFilename(const std::string& filename) {
 	}
 	return res;
 }
+
+
 
 void GMLtoOBJ::processCityModel(const citygml::CityModel & cityModel)
 {
@@ -199,4 +260,9 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 			file << std::endl << std::endl;
 		}
 	}
+}
+
+void GMLtoOBJ::setGMLFilename(const std::string & filename)
+{
+	this->gmlFilename = filename;
 }

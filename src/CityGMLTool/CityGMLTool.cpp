@@ -32,7 +32,7 @@ Module* CityGMLTool::findModuleByName(const std::string name)
 	}
 }
 
-void CityGMLTool::parse()
+void CityGMLTool::parse(std::string & filename)
 {	
 	XMLParser* xmlparser = static_cast<XMLParser*>(this->findModuleByName("xmlparser"));
 
@@ -43,6 +43,7 @@ void CityGMLTool::parse()
 	if (cityModel == 0)
 	{
 		std::cout << "PARSING:.............................:[FAILED]" << std::endl;
+		exit(1);
 		return;
 	}
 
@@ -93,13 +94,13 @@ void CityGMLTool::parse()
 	//}
 }
 
-void CityGMLTool::createOBJ(){
+void CityGMLTool::createOBJ(std::string & gmlFilename, std::string output) {
 	 GMLtoOBJ* mOBJconverter = static_cast<GMLtoOBJ*>(this->findModuleByName("objcreator"));
 	 if(cityModel){
-	 	mOBJconverter->createMyOBJ(*cityModel, filename);
-		std::cout << "OBJconverter:.............................:[OK]" << std::endl;
+		 mOBJconverter->setGMLFilename(gmlFilename);
+	 	mOBJconverter->createMyOBJ(*cityModel, output);
 	 }else {
-	 	std::cout << "OBJconverter:.............................:[FAILED]" << std::endl;
+	 	std::cout << "OBJconverter:.............................:[FAILED]: CityModel NULL" << std::endl;
 	 	return;
 	 }
 }

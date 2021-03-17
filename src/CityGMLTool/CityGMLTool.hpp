@@ -14,8 +14,8 @@ public:
 	~CityGMLTool();
 
 	Module* findModuleByName(const std::string name);
-	void parse();
-	void createOBJ();
+	void parse(std::string & filename);
+	void createOBJ(std::string & gmlFilename, std::string output = "");
 	void setFileName(std::string& filename);
 
 private:
