@@ -35,27 +35,27 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 		outputLocation = arg;
 	}
 	// 3. Test if it's a directory and test if it exists
-	else if (arg.back() == '/' || arg.back() == '\\') {
-		std::string cmd = "mkdir " + arg.substr(0, arg.size() - 1);
-		std::cout << "[COMMAND]: " << cmd << std::endl;
-		int cmdResult = system(cmd.c_str());
-		if (cmdResult == 0) { // Directory exist
-			std::cout << "[DIRECTORY FOUND]: '" << arg << "'." << std::endl;
-			// outputLocation = arg + <filename>.obj
-			outputLocation = arg.append(eraseExtension(this->gmlFilename).append(".obj"));
+	else {
+		std::string cmd;
+		if (arg.back() == '/' || arg.back() == '\\') {
+			cmd = "mkdir " + arg.substr(0, arg.size() - 1);
 		}
-		else { // Directory doesn't exist
-			std::cout << "[DIRECTORY] '" << arg << "' doesn't exist. Creating default 'output/obj'." << std::endl;
+		else {
+			cmd = "mkdir " + arg;
+			arg.append("/");
+		}
 
-			cmdResult = system("mkdir output");
-			if (cmdResult == 0) {
-				cmdResult = system("mkdir output/obj");
-				if (cmdResult == 0) {
-					std::cout << "[DIRECTORY CREATED] : 'output/obj'.";
-					
-					outputLocation = "output/obj/" + eraseExtension(this->gmlFilename) + ".obj";
-				}
-			}
+		std::cout << "[COMMAND]: " << cmd << std::endl;
+
+		int cmdResult = system(cmd.c_str());
+		outputLocation = arg.append(eraseExtension(this->gmlFilename).append(".obj"));
+
+		/* DEBUG LOG */
+		if (cmdResult == 0) { // Directory created
+			std::cout << "[DIRECTORY CREATED]: '" << arg << "'." << std::endl;
+		}
+		else { // Directory exists
+			std::cout << "[DIRECTORY FOUND] '" << arg << "'" << std::endl;
 		}
 	}
 }
@@ -81,100 +81,6 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 
 		processCityModel(cityModel);
 
-		//std::cout << "DEBUG" << std::endl;
-		//std::cout << cityModel.getCityObjectsMap().size() << std::endl;
-		//std::cout << cityModel.getCityObjectsRoots()[0]->getType() << std::endl;
-
-
-		/*for (int i = 0; i < cityModel.getCityObjectsRoots().size(); i++)
-		{
-			for (int j = 0; j < cityModel.getCityObjectsRoots()[i]->getChildCount(); j++) {
-				citygml::CityObject* obj = cityModel.getCityObjectsRoots()[i]->getChild(j);
-				for (int k = 0; k < obj->getGeometries().size();k++) {
-					for (int l = 0; l < obj->getGeometry(k)->getPolygons().size();l++) { //faces
-						int size = obj->getGeometry(k)->getPolygons()[l]->getVertices().size();
-
-						for (int m = 0; m < size;m++) {
-							double mX = ((double)obj->getGeometry(k)->getPolygons()[l]->getVertices()[m].x) - boundingX;
-							double mY = ((double)obj->getGeometry(k)->getPolygons()[l]->getVertices()[m].y) - boundingY;
-							double mZ = ((double)obj->getGeometry(k)->getPolygons()[l]->getVertices()[m].z) - boundingZ;
-
-							file << std::fixed << "v " << mX << " ";
-							file << std::fixed << mY << " ";
-							file << std::fixed << mZ << std::endl;
-						}
-						vertexCounter += size;
-						file << "f";
-						for (int m = 0; m < size;m++) {
-							int temp = (vertexCounter - ((size - 1) - m));
-							file << " " << temp;
-						}
-						file << std::endl << std::endl;
-					}
-				}
-			}
-		}*/
-
-		// For every CityObject located at the root
-		//for (int i = 0; i < cityModel.getCityObjectsRoots().size(); i++)
-		//{
-		//	for (int j = 0; j < cityModel.getCityObjectsRoots()[i]->getChildCount(); j++) {
-		//		citygml::CityObject* obj = cityModel.getCityObjectsRoots()[i]->getChild(j);
-
-		//		std::cout << "////////////////// " << obj->getType() << std::endl;
-		//		std::cout << "////////////////// " << citygml::CityObjectsType::COT_BuildingPart << std::endl;
-
-		//		if(obj->getType() == citygml::CityObjectsType::COT_BuildingPart) {
-		//			for (int k = 0; k < obj->getChildren().size();k++) {
-		//				for (int l = 0; l < obj->getChildren()[k]->getGeometries().size();l++) { //faces
-		//					for (int m = 0; m < obj->getChildren()[k]->getGeometry(l)->getPolygons().size();m++) { //faces
-		//						int size = obj->getChildren()[k]->getGeometry(l)->getPolygons()[m]->getVertices().size();
-		//						for (int n = 0; n < size; n++) {
-		//							double mX = ((double)obj->getChildren()[k]->getGeometry(l)->getPolygons()[m]->getVertices()[n].x);
-		//							double mY = ((double)obj->getChildren()[k]->getGeometry(l)->getPolygons()[m]->getVertices()[n].y);
-		//							double mZ = ((double)obj->getChildren()[k]->getGeometry(l)->getPolygons()[m]->getVertices()[n].z);
-		//							//std::cout << "v " << mX << " " << mY << " " << mZ << std::endl;
-		//							file << std::fixed << "v " << mX << " ";
-		//							file << std::fixed << mY << " ";
-		//							file << std::fixed << mZ << std::endl;
-		//						}
-		//						vertexCounter += size;
-		//						file << "f";
-		//						for (int m = 0; m < size;m++) {
-		//							int temp = (vertexCounter - ((size - 1) - m));
-		//							file << " " << temp;
-		//						}
-		//						file << std::endl << std::endl;
-		//					}
-		//				}
-		//			}
-		//		}
-		//		else {
-		//			for (int k = 0; k < obj->getGeometries().size();k++) {
-		//				for (int l = 0; l < obj->getGeometry(k)->getPolygons().size();l++) { //faces
-		//					int size = obj->getGeometry(k)->getPolygons()[l]->getVertices().size();
-
-		//					for (int m = 0; m < size;m++) {
-		//						double mX = ((double)obj->getGeometry(k)->getPolygons()[l]->getVertices()[m].x) - boundingX;
-		//						double mY = ((double)obj->getGeometry(k)->getPolygons()[l]->getVertices()[m].y) - boundingY;
-		//						double mZ = ((double)obj->getGeometry(k)->getPolygons()[l]->getVertices()[m].z) - boundingZ;
-
-		//						file << std::fixed << "v " << mX << " ";
-		//						file << std::fixed << mY << " ";
-		//						file << std::fixed << mZ << std::endl;
-		//					}
-		//					vertexCounter += size;
-		//					file << "f";
-		//					for (int m = 0; m < size;m++) {
-		//						int temp = (vertexCounter - ((size - 1) - m));
-		//						file << " " << temp;
-		//					}
-		//					file << std::endl << std::endl;
-		//				}
-		//			}
-		//		}
-		//	}
-		//}
 		file.close();
 
 		std::cout << "OBJconverter:.............................:[OK]" << std::endl;
