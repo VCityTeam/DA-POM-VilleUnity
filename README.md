@@ -12,6 +12,7 @@ Supervisors:
 ## Modules
 
 * #### [GMLtoOBJ](https://github.com/VCityTeam/DA-POM/wiki/Module_GMLtoOBJ)
+* #### [GMLSplit](https://github.com/VCityTeam/DA-POM/wiki/Module_GMLSplit)
 
 ## Deadlines
 
