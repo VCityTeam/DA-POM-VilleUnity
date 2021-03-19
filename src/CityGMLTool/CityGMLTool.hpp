@@ -6,6 +6,7 @@
 #include "../Modules/Module.hpp"
 #include "../Modules/XMLParser/XMLParser.hpp"
 #include "../Modules/GMLtoOBJ/GMLtoOBJ.hpp"
+#include "../Modules/GMLSplit/GMLSplit.hpp"
 
 class CityGMLTool
 {
@@ -16,6 +17,8 @@ public:
 	Module* findModuleByName(const std::string name);
 	void parse(std::string & filename);
 	void createOBJ(std::string & gmlFilename, std::string output = "");
+	void gmlSplit(std::string & gmlFilename, std::string output = "");
+
 	void setFileName(std::string& filename);
 
 private:

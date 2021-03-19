@@ -4,6 +4,7 @@ CityGMLTool::CityGMLTool()
 {
 	this->modules.push_back(new XMLParser("xmlparser"));
 	this->modules.push_back(new GMLtoOBJ("objcreator"));
+	this->modules.push_back(new GMLSplit("gmlsplit"));
 }
 
 CityGMLTool::~CityGMLTool()
@@ -103,6 +104,12 @@ void CityGMLTool::createOBJ(std::string & gmlFilename, std::string output) {
 	 	std::cout << "OBJconverter:.............................:[FAILED]: CityModel NULL" << std::endl;
 	 	return;
 	 }
+}
+
+void CityGMLTool::gmlSplit(std::string & gmlFilename, std::string output)
+{
+	GMLSplit* gmlsplit = static_cast<GMLSplit*>(this->findModuleByName("gmlsplit"));
+	std::cout << "CityGMLTool::gmlSplit [MODULE NAME]: " << gmlsplit->getName() << std::endl;
 }
 
 void CityGMLTool::setFileName(std::string& filename) {
