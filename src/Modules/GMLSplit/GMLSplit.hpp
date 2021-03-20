@@ -9,6 +9,8 @@ class GMLSplit : public Module
 public:
 	GMLSplit(std::string name);
 
+	void splitGMLFile(std::string & filename, int nbSplit, std::string outputLocation);
+
 private:
 
 };

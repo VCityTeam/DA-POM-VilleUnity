@@ -16,7 +16,8 @@ CLI::CLI(int argc, char* argv[])
 	_cliParams.push_back(CLIParam("--help", "Prints usage."));
 	_cliParams.push_back(CLIParam("--debug", "Turn on debug mode."));
 	_cliParams.push_back(CLIParam("--obj", "Convert a CityGML file into OBJ file.", std::vector<bool>({ 0 })));
-	_cliParams.push_back(CLIParam("--split", "Split a CityGML file into multiple CityGML files.", std::vector<bool>({ 0 })));
+	_cliParams.push_back(CLIParam("--cut", "Cut a CityGML file into smaller CityGML file.", std::vector<bool>({ 1, 1, 1, 1, 0 })));
+	_cliParams.push_back(CLIParam("--split", "Split a CityGML file into multiple CityGML files.", std::vector<bool>({ 1, 0 })));
 
 }
 
@@ -123,8 +124,19 @@ void CLI::processCmdLine()
 				}
 				
 			}
+			else if (name == "--cut") {
+				//TODO: handle optional parameter (output location)
+				_citygmltool->gmlCut(
+					_gmlFilename,
+					std::stod(_cliParams[i]._args[0]),
+					std::stod(_cliParams[i]._args[1]),
+					std::stod(_cliParams[i]._args[2]),
+					std::stod(_cliParams[i]._args[3])
+				);
+			}
 			else if (name == "--split") {
-				_citygmltool->gmlSplit(_gmlFilename);
+				//TODO: handle stoi exception with invalid argument
+				_citygmltool->gmlSplit(_gmlFilename, std::stoi(_cliParams[i]._args[0]));
 			}
 		}
 	}

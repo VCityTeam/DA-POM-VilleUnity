@@ -79,6 +79,11 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 		boundingY = cityModel.getEnvelope().getLowerBound().y;
 		boundingZ = cityModel.getEnvelope().getLowerBound().z;
 
+		// These lines fixes the double initialization
+		if (boundingX == DBL_MAX) boundingX = 0.0;
+		if (boundingY == DBL_MAX) boundingY = 0.0;
+		if (boundingZ == DBL_MAX) boundingZ = 0.0;
+
 		processCityModel(cityModel);
 
 		file.close();
@@ -158,12 +163,15 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 			}
 
 			vertexCounter += size;
-			file << "f";
-			for (int m = 0; m < size; m++) {
-				int temp = (vertexCounter - ((size - 1) - m));
-				file << " " << temp;
+			// If there are vertices : create faces
+			if (size != 0) {
+				file << "f";
+				for (int m = 0; m < size; m++) {
+					int temp = (vertexCounter - ((size - 1) - m));
+					file << " " << temp;
+				}
+				file << std::endl << std::endl;
 			}
-			file << std::endl << std::endl;
 		}
 	}
 }

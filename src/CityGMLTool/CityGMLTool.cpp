@@ -4,6 +4,7 @@ CityGMLTool::CityGMLTool()
 {
 	this->modules.push_back(new XMLParser("xmlparser"));
 	this->modules.push_back(new GMLtoOBJ("objcreator"));
+	this->modules.push_back(new GMLCut("gmlcut"));
 	this->modules.push_back(new GMLSplit("gmlsplit"));
 }
 
@@ -106,10 +107,18 @@ void CityGMLTool::createOBJ(std::string & gmlFilename, std::string output) {
 	 }
 }
 
-void CityGMLTool::gmlSplit(std::string & gmlFilename, std::string output)
+void CityGMLTool::gmlCut(std::string & gmlFilename, double xmin, double ymin, double xmax, double ymax, std::string output)
+{
+	GMLCut* gmlcut = static_cast<GMLCut*>(this->findModuleByName("gmlcut"));
+
+	gmlcut->cut(gmlFilename, xmin, ymin, xmax, ymax, output);
+}
+
+void CityGMLTool::gmlSplit(std::string & gmlFilename, int nbSplit, std::string output)
 {
 	GMLSplit* gmlsplit = static_cast<GMLSplit*>(this->findModuleByName("gmlsplit"));
-	std::cout << "CityGMLTool::gmlSplit [MODULE NAME]: " << gmlsplit->getName() << std::endl;
+
+	gmlsplit->splitGMLFile(gmlFilename, nbSplit, output);
 }
 
 void CityGMLTool::setFileName(std::string& filename) {

@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <math.h>
+#include <float.h>
 #include "../Module.hpp"
 #include "../../CityModel/CityModel.hpp"
 
@@ -30,9 +31,9 @@ private:
 	std::string outputLocation;	// path to ouput location : "output/obj/<filename>" or "/path/to/<filename>"
 
 	int vertexCounter;
-	double boundingX;
-	double boundingY;
-	double boundingZ;
+	double boundingX = 0.0;
+	double boundingY = 0.0;
+	double boundingZ = 0.0;
 };
 
 #endif // !GMLTOOBJ_HPP
