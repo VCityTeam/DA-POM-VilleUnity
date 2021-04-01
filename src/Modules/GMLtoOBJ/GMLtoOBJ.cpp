@@ -113,6 +113,7 @@ void GMLtoOBJ::processCityModel(const citygml::CityModel & cityModel)
 	std::cout << "CityModel:[ROOT] " << cityModel.getCityObjectsRoots().size() << " children" << std::endl;
 
 	for (int childIdx = 0; childIdx < cityModel.getCityObjectsRoots().size(); childIdx++) {
+		file << "g " << childIdx << std::endl;
 		processCityObject(*cityModel.getCityObjectsRoots()[childIdx]);
 	}
 }
@@ -145,7 +146,6 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 
 		for (int polygonIdx = 0; polygonIdx < cityObject.getGeometry(geoIdx)->getPolygons().size(); polygonIdx++) { //faces
 			int size = cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices().size();
-
 			for (int n = 0; n < size; n++) {
 				double mX = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].x) - boundingX;
 				double mY = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].y) - boundingY;
@@ -153,8 +153,8 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 				//std::cout << "v " << mX << " " << mY << " " << mZ << std::endl;
 
 				file << std::fixed << "v " << mX << " ";
-				file << std::fixed << mY << " ";
-				file << std::fixed << mZ << std::endl;
+				file << std::fixed << mZ << " ";
+				file << std::fixed << mY << std::endl;
 			}
 
 			vertexCounter += size;
