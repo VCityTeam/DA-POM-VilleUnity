@@ -70,9 +70,10 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 	if(file){
 		file.clear();
 		file << "# Generated OBJ object from DA-POM project 2020 " << std::endl;
-		file << "# " << std::endl << std::endl;
+		file << "# " << std::endl;
+		file << "mtllib " << eraseExtension(gmlFilename) << ".mtl" << std::endl << std::endl;
 		file << "o " << eraseExtension(gmlFilename) << std::endl << std::endl;
-
+		file << "usemtl Murs" << std::endl;
 		vertexCounter = 0;
 
 		boundingX = cityModel.getEnvelope().getLowerBound().x;
@@ -145,6 +146,8 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 		//std::cout << "\t\t" << *cityObject.getGeometry(geoIdx) << std::endl;
 
 		for (int polygonIdx = 0; polygonIdx < cityObject.getGeometry(geoIdx)->getPolygons().size(); polygonIdx++) { //faces
+
+			//std::cout << "TEXTURES" << cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getTexCoords().front() << std::endl;
 			int size = cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices().size();
 			for (int n = 0; n < size; n++) {
 				double mX = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].x) - boundingX;
@@ -152,11 +155,16 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 				double mZ = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].z) - boundingZ;
 				//std::cout << "v " << mX << " " << mY << " " << mZ << std::endl;
 
-				file << std::fixed << "v " << mX << " ";
+				file << std::fixed << "v " << mY << " ";
 				file << std::fixed << mZ << " ";
-				file << std::fixed << mY << std::endl;
+				file << std::fixed << mX << std::endl;
 			}
-
+			for (int coords = 0; coords < cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getTexCoords().size(); coords++) { // cordonnées de textures
+				float vtX = cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getTexCoords()[coords].x;
+				float vtY = cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getTexCoords()[coords].y;
+				file << "vt " << vtX << " " << vtY << std::endl;
+				std::cout << "TEXTURES " << vtX << " " << vtY << std::endl;
+			}
 			vertexCounter += size;
 			file << "f";
 			for (int m = 0; m < size; m++) {
