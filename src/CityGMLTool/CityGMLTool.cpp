@@ -97,7 +97,7 @@ void CityGMLTool::parse(std::string & filename)
 void CityGMLTool::createOBJ(std::string & gmlFilename, std::string output) {
 	 GMLtoOBJ* mOBJconverter = static_cast<GMLtoOBJ*>(this->findModuleByName("objcreator"));
 	 if(cityModel){
-		 mOBJconverter->setGMLFilename(gmlFilename);
+		mOBJconverter->setGMLFilename(gmlFilename);
 	 	mOBJconverter->createMyOBJ(*cityModel, output);
 	 }else {
 	 	std::cout << "OBJconverter:.............................:[FAILED]: CityModel NULL" << std::endl;

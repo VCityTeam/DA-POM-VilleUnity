@@ -71,10 +71,12 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 		file.clear();
 		file << "# Generated OBJ object from DA-POM project 2020 " << std::endl;
 		file << "# " << std::endl;
-		file << "mtllib " << eraseExtension(gmlFilename) << ".mtl" << std::endl << std::endl;
-		file << "o " << eraseExtension(gmlFilename) << std::endl << std::endl;
-		file << "usemtl Murs" << std::endl;
+		std::string name = eraseExtension(outputLocation);
+		file << "mtllib " << name << ".mtl" << std::endl << std::endl;
+		file << "o " << name << std::endl << std::endl;
+		//file << "usemtl Murs" << std::endl;
 		vertexCounter = 0;
+		texturCounter = 0;
 
 		boundingX = cityModel.getEnvelope().getLowerBound().x;
 		boundingY = cityModel.getEnvelope().getLowerBound().y;
@@ -83,6 +85,8 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 		processCityModel(cityModel);
 
 		file.close();
+		std::string mtlOutput = outputLocation;
+		exportMaterials(mtlOutput.replace(mtlOutput.end() - 3,mtlOutput.end(),"mtl"));
 
 		std::cout << "OBJconverter:.............................:[OK]" << std::endl;
 	}else {
@@ -114,7 +118,6 @@ void GMLtoOBJ::processCityModel(const citygml::CityModel & cityModel)
 	std::cout << "CityModel:[ROOT] " << cityModel.getCityObjectsRoots().size() << " children" << std::endl;
 
 	for (int childIdx = 0; childIdx < cityModel.getCityObjectsRoots().size(); childIdx++) {
-		file << "g " << childIdx << std::endl;
 		processCityObject(*cityModel.getCityObjectsRoots()[childIdx]);
 	}
 }
@@ -142,34 +145,62 @@ void GMLtoOBJ::processCityObject(const citygml::CityObject & cityObject)
 
 void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 {
+	file << "g " << cityObject.getTypeAsString() << "\n";
+
 	for (int geoIdx = 0; geoIdx < cityObject.getGeometries().size(); geoIdx++) {
 		//std::cout << "\t\t" << *cityObject.getGeometry(geoIdx) << std::endl;
-
+		
 		for (int polygonIdx = 0; polygonIdx < cityObject.getGeometry(geoIdx)->getPolygons().size(); polygonIdx++) { //faces
 
-			//std::cout << "TEXTURES" << cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getTexCoords().front() << std::endl;
-			int size = cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices().size();
-			for (int n = 0; n < size; n++) {
-				double mX = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].x) - boundingX;
-				double mY = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].y) - boundingY;
-				double mZ = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].z) - boundingZ;
+			citygml::Polygon * poly = cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx];
+
+			//std::map<std::string, std::string> m_materials;
+			if (poly->getTexture()) {
+				std::string mat = poly->getTexture()->getUrl();
+				mat = mat.substr(mat.find_last_of('/') + 1);
+				mat = mat.substr(0, mat.find_last_of('.'));
+				file << "usemtl " << mat << "\n";
+				m_materials[mat] = poly->getTexture()->getUrl(); // add material to map, will be used by exportMaterials
+			}
+
+			//file << "g " << poly->getId() << "\n\n";
+			
+			int size = poly->getVertices().size();
+			for (const TVec3d& v : poly->getVertices())
+			{
+				file << std::fixed << "v " << v.y - boundingY << " " << v.z - boundingZ << " " << v.x - boundingX << "\n";
+			}
+			/*for (int n = 0; n < size; n++) {
+				double mX = (poly->getVertices()[n].x) - boundingX;
+				double mY = (poly->getVertices()[n].y) - boundingY;
+				double mZ = (poly->getVertices()[n].z) - boundingZ;
 				//std::cout << "v " << mX << " " << mY << " " << mZ << std::endl;
 
 				file << std::fixed << "v " << mY << " ";
 				file << std::fixed << mZ << " ";
 				file << std::fixed << mX << std::endl;
+			}*/
+			for (const TVec3f& vn : poly->getNormals())
+			{
+				file << "vn " << vn.x << " " << vn.y << " " << vn.z << "\n";
 			}
-			for (int coords = 0; coords < cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getTexCoords().size(); coords++) { // cordonnées de textures
-				float vtX = cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getTexCoords()[coords].x;
-				float vtY = cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getTexCoords()[coords].y;
+
+			for (const TVec2f& vt : poly->getTexCoords())
+			{
+				file << "vt " << vt.x << " " << vt.y << "\n";
+			}
+			/*for (int coords = 0; coords < poly->getTexCoords().size(); coords++) { // cordonnées de textures
+				float vtX = poly->getTexCoords()[coords].x;
+				float vtY = poly->getTexCoords()[coords].y;
 				file << "vt " << vtX << " " << vtY << std::endl;
-				std::cout << "TEXTURES " << vtX << " " << vtY << std::endl;
-			}
+				//std::cout << "TEXTURES " << vtX << " " << vtY << std::endl;
+			}*/
+			//file << "s off" << std::endl;
 			vertexCounter += size;
 			file << "f";
 			for (int m = 0; m < size; m++) {
 				int temp = (vertexCounter - ((size - 1) - m));
-				file << " " << temp;
+				file << " " << temp << "/" << temp << "/" << temp;
 			}
 			file << std::endl << std::endl;
 		}
@@ -179,4 +210,39 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 void GMLtoOBJ::setGMLFilename(const std::string & filename)
 {
 	this->gmlFilename = filename;
+}
+
+void GMLtoOBJ::exportMaterials(const std::string& filename)
+{
+	std::cout << "MTL filename =>" << filename << std::endl;
+	std::ofstream mat(filename);
+
+	mat << "# Generated MTL object from DA-POM project 2020 " << std::endl;
+	mat << "# " << std::endl << std::endl;;
+
+	int i = 0;
+	for (auto& it : m_materials)
+	{
+		++i;
+		mat << "newmtl " << it.first << "\n";
+		mat << "Ka 1.000000 1.000000 1.000000\n";
+		mat << "Kd 1.000000 1.000000 1.000000\n";
+		mat << "Ks 0.000000 0.000000 0.000000\n";
+		mat << "Tr 1.000000\n";
+		mat << "illum 1\n";
+		mat << "Ns 0.000000\n";
+		mat << "map_Kd " << it.second << "\n\n";
+	}
+	if (i == 0)//mat est vide, il faut cependant ecrire dans le mtl sinon Assimp ne peut ouvrir le fichier
+	{
+		mat << "newmtl No Material \n";
+		mat << "Ka 1.000000 1.000000 1.000000\n";
+		mat << "Kd 1.000000 1.000000 1.000000\n";
+		mat << "Ks 0.000000 0.000000 0.000000\n";
+		mat << "Tr 1.000000\n";
+		mat << "illum 1\n";
+		mat << "Ns 0.000000\n";
+		mat << "map_Kd No Material \n\n";
+	}
+	mat.close();
 }
