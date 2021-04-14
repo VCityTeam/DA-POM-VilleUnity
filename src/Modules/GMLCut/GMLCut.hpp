@@ -1,13 +1,24 @@
-#ifndef GMLCUT
-#define GMLCUT
+#ifndef GMLCUT_HPP
+#define GMLCUT_HPP
 
 #include <set>
 #include <map>
 #include <vector>
 #include <fstream>
 
+#ifdef _MSC_VER                // Inhibit dll-interface warnings concerning
+# pragma warning(disable:4251) // gdal-1.11.4 internals (cpl_string.h) when
+#endif                         // including ogrsf_frmts.h on VCC++
+#include <ogrsf_frmts.h>
+
 #include <libxml/tree.h>
 #include "../Module.hpp"
+#include "../../CityModel/CityGML.hpp"
+#include "../../CityModel/CityModel.hpp"
+#include "TextureCityGML.hpp"
+#include "ConvertTextures.hpp"
+#include "OGRGDALtools.hpp"
+
 #include "Triangulate.hpp"
 
 #include <float.h> // MT : for DBL_MAX on MAC OS X
@@ -24,6 +35,8 @@ class GMLCut : public Module
 {
 public:
 	GMLCut(std::string name);
+
+	citygml::CityModel* assign(citygml::CityModel* model, std::vector<TextureCityGML*>* texturesList, TVec2d minTile, TVec2d maxTile, std::string pathFolder);
 
 	void cut(std::string & filename, double xmin, double ymin, double xmax, double ymax, std::string outputLocation);
 
@@ -73,4 +86,4 @@ private:
 	bool VERBOSE = true;
 };
 
-#endif // !GMLCUT
+#endif // !GMLCUT_HPP

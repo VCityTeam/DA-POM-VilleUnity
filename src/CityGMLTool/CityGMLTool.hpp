@@ -9,6 +9,8 @@
 #include "../Modules/GMLCut/GMLCut.hpp"
 #include "../Modules/GMLSplit/GMLSplit.hpp"
 
+#include "../Modules/GMLCut/TextureCityGML.hpp"
+
 class CityGMLTool
 {
 public:
@@ -18,7 +20,7 @@ public:
 	Module* findModuleByName(const std::string name);
 	void parse(std::string & filename);
 	void createOBJ(std::string & gmlFilename, std::string output = "");
-	void gmlCut(std::string & gmlFilename, double xmin, double ymin, double xmax, double ymax, std::string output = "");
+	void gmlCut(std::string & gmlFilename, double xmin, double ymin, double xmax, double ymax, bool assignOrCut = false, std::string output = "");
 	void gmlSplit(std::string & gmlFilename, int nbSplit, std::string output = "");
 
 	void setFileName(std::string& filename);

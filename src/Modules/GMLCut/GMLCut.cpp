@@ -4,6 +4,280 @@ GMLCut::GMLCut(std::string name) : Module(name)
 {
 }
 
+////////////////////////////////////////////////////////////////////////////////
+/**
+* @brief Decoupe le fichier CityGML en un ensemble de tuiles dont la taille est definie en entree. Les geometries sont ici assignees a une tuile selon leur centre de gravite.
+* @param model : Contient les donnees du fichier CityGML ouvert : il doit contenir un ensemble de batiments LOD2 ou du terrain
+* @param texturesList : La fonction va remplir ce vector avec tous les appels de texture qu'il faudra enregistrer dans le CityGML en sortie;
+* @param minTile : Coordonnee du coin bas gauche de la tuile
+* @param maxTile : Coordonnee du coin haut droit de la tuile
+*/
+citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<TextureCityGML*>* texturesList, TVec2d minTile, TVec2d maxTile, std::string pathFolder)
+{
+	// Copyright University of Lyon, 2012 - 2017
+	// Distributed under the GNU Lesser General Public License Version 2.1 (LGPLv2)
+	// (Refer to accompanying file LICENSE.md or copy at
+	//  https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html )
+
+	citygml::CityModel* Tuile = new citygml::CityModel();
+
+	OGRPolygon* PolyTile = new OGRPolygon();
+	OGRLinearRing* RingTile = new OGRLinearRing();
+	RingTile->addPoint(minTile.x, minTile.y);
+	RingTile->addPoint(minTile.x, maxTile.y);
+	RingTile->addPoint(maxTile.x, maxTile.y);
+	RingTile->addPoint(maxTile.x, minTile.y);
+	RingTile->addPoint(minTile.x, minTile.y);
+	PolyTile->addRingDirectly(RingTile);
+
+	for (citygml::CityObject* obj : model->getCityObjectsRoots())
+	{
+		if (obj->getType() == citygml::COT_TINRelief || obj->getType() == citygml::COT_WaterBody)
+		{
+			std::string Name = obj->getId();
+			citygml::CityObject* TIN_CO = nullptr;
+			if (obj->getType() == citygml::COT_TINRelief)
+				TIN_CO = new citygml::TINRelief(Name);
+			else if (obj->getType() == citygml::COT_WaterBody)
+				TIN_CO = new citygml::WaterBody(Name);
+
+			citygml::Geometry* TIN = new citygml::Geometry(Name, citygml::GT_Unknown, 2);
+
+			for (citygml::Geometry* Geometry : obj->getGeometries())
+			{
+				for (citygml::Polygon * PolygonCityGML : Geometry->getPolygons())
+				{
+					OGRLinearRing * OgrRing = new OGRLinearRing;
+					for (TVec3d Point : PolygonCityGML->getExteriorRing()->getVertices())
+						OgrRing->addPoint(Point.x, Point.y, Point.z);
+
+					OgrRing->closeRings();
+
+					if (OgrRing->getNumPoints() < 4)
+					{
+						delete OgrRing;
+						continue;
+					}
+
+					OGRPolygon* OgrPoly = new OGRPolygon;
+					OgrPoly->addRingDirectly(OgrRing);
+					if (!OgrPoly->IsValid())
+					{
+						delete OgrPoly;
+						continue;
+					}
+
+					OGRPoint* Centroid = new OGRPoint;
+					OgrPoly->Centroid(Centroid);
+
+					if (Centroid == nullptr || Centroid->getX() < minTile.x || Centroid->getX() > maxTile.x || Centroid->getY() < minTile.y || Centroid->getY() > maxTile.y) //Si le centroid n'est pas dans la tuile courante, on passe a la suivante.
+					{
+						delete OgrPoly;
+						delete Centroid;
+						continue;
+					}
+
+					delete Centroid;
+					delete OgrPoly;
+
+					std::vector<TVec2f> TexUV = PolygonCityGML->getTexCoords();
+
+					bool HasTexture = (PolygonCityGML->getTexture() != nullptr);
+
+					if (HasTexture && PolygonCityGML->getTexture()->getType() == "GeoreferencedTexture") //Ce sont des coordonnees georeferences qu'il faut convertir en coordonnees de texture standard
+						TexUV = ConvertGeoreferencedTextures(TexUV);
+
+					std::string Url;
+					citygml::Texture::WrapMode WrapMode;
+					if (HasTexture)
+					{
+						Url = PolygonCityGML->getTexture()->getUrl();
+						WrapMode = PolygonCityGML->getTexture()->getWrapMode();
+					}
+
+					TIN->addPolygon(PolygonCityGML->Clone());
+
+					if (HasTexture)
+					{
+						TexturePolygonCityGML Poly;
+
+						Poly.Id = PolygonCityGML->getId();
+						Poly.IdRing = PolygonCityGML->getExteriorRing()->getId();
+						Poly.TexUV = TexUV;
+
+						bool URLTest = false;//Permet de dire si l'URL existe deja dans TexturesList ou non. Si elle n'existe pas, il faut creer un nouveau TextureCityGML pour la stocker.
+						for (TextureCityGML* Tex : *texturesList)
+						{
+							if (Tex->Url == Url)
+							{
+								URLTest = true;
+								Tex->ListPolygons.push_back(Poly);
+								break;
+							}
+						}
+						if (!URLTest)
+						{
+							TextureCityGML* Texture = new TextureCityGML;
+							Texture->Wrap = WrapMode;
+							Texture->Url = Url;
+							Texture->ListPolygons.push_back(Poly);
+							texturesList->push_back(Texture);
+						}
+					}
+				}
+			}
+
+			if (TIN->getPolygons().size() > 0)
+			{
+				TIN_CO->addGeometry(TIN);
+				Tuile->addCityObject(TIN_CO);
+				Tuile->addCityObjectAsRoot(TIN_CO);
+			}
+		}
+		else if (obj->getType() == citygml::COT_Building)
+		{
+			std::string Name = obj->getId();
+			citygml::CityObject* BuildingCO = new citygml::Building(Name);
+			citygml::CityObject* RoofCO = new citygml::RoofSurface(Name + "_Roof");
+			citygml::Geometry* Roof = new citygml::Geometry(Name + "_RoofGeometry", citygml::GT_Roof, 2);
+			citygml::CityObject* WallCO = new citygml::WallSurface(Name + "_Wall");
+			citygml::Geometry* Wall = new citygml::Geometry(Name + "_WallGeometry", citygml::GT_Wall, 2);
+
+			OGRMultiPolygon* Building = new OGRMultiPolygon();//Version OGR du batiment qui va etre remplie
+
+			for (citygml::CityObject* object : obj->getChildren())//On parcourt les objets (Wall, Roof, ...) du batiment
+			{
+				if (object->getType() == citygml::COT_RoofSurface)
+				{
+					for (citygml::Geometry* Geometry : object->getGeometries()) //pour chaque geometrie
+					{
+						for (citygml::Polygon * PolygonCityGML : Geometry->getPolygons()) //Pour chaque polygone
+						{
+							OGRLinearRing * OgrRing = new OGRLinearRing;
+							for (TVec3d Point : PolygonCityGML->getExteriorRing()->getVertices())
+								OgrRing->addPoint(Point.x, Point.y, Point.z);
+
+							OgrRing->closeRings();
+							if (OgrRing->getNumPoints() > 3)
+							{
+								OGRPolygon * OgrPoly = new OGRPolygon;
+								OgrPoly->addRingDirectly(OgrRing);
+								if (OgrPoly->IsValid())
+								{
+									Building->addGeometryDirectly(OgrPoly);
+								}
+							}
+							else
+								delete OgrRing;
+						}
+					}
+				}
+			}
+
+			if (Building->IsEmpty())
+				continue;
+
+			OGRMultiPolygon * Enveloppe = GetEnveloppe(Building);
+
+			if (Enveloppe->IsEmpty() || !Enveloppe->IsValid())
+			{
+				delete Enveloppe;
+				continue;
+			}
+
+			OGRPoint* Centroid = new OGRPoint;
+			Enveloppe->Centroid(Centroid);
+			if (Centroid->getX() < minTile.x || Centroid->getX() > maxTile.x || Centroid->getY() < minTile.y || Centroid->getY() > maxTile.y) //Si le centroid n'est pas dans la tuile courante, on passe a la suivante.
+			{
+				delete Enveloppe;
+				delete Centroid;
+				continue;
+			}
+			delete Centroid;
+			delete Enveloppe;
+
+			for (citygml::CityObject* object : obj->getChildren())//On parcourt les objets (Wall, Roof, ...) du batiment
+			{
+				for (citygml::Geometry* Geometry : object->getGeometries()) //pour chaque geometrie
+				{
+					for (citygml::Polygon * PolygonCityGML : Geometry->getPolygons()) //Pour chaque polygone
+					{
+						std::vector<TVec2f> TexUV = PolygonCityGML->getTexCoords();
+
+						bool HasTexture = (PolygonCityGML->getTexture() != nullptr);
+
+						std::string Url;
+						citygml::Texture::WrapMode WrapMode;
+						if (HasTexture)
+						{
+							Url = PolygonCityGML->getTexture()->getUrl();
+							WrapMode = PolygonCityGML->getTexture()->getWrapMode();
+						}
+
+						if (object->getType() == citygml::COT_RoofSurface)
+							Roof->addPolygon(PolygonCityGML->Clone());
+
+						else if (object->getType() == citygml::COT_WallSurface)
+							Wall->addPolygon(PolygonCityGML->Clone());
+
+						if (HasTexture)
+						{
+							TexturePolygonCityGML Poly;
+
+							Poly.Id = PolygonCityGML->getId();
+							Poly.IdRing = PolygonCityGML->getExteriorRing()->getId();
+							Poly.TexUV = TexUV;
+
+							bool URLTest = false;//Permet de dire si l'URL existe deja dans texturesList ou non. Si elle n'existe pas, il faut creer un nouveau TextureCityGML pour la stocker.
+							for (TextureCityGML* Tex : *texturesList)
+							{
+								if (Tex->Url == Url)
+								{
+									URLTest = true;
+									Tex->ListPolygons.push_back(Poly);
+									break;
+								}
+							}
+							if (!URLTest)
+							{
+								TextureCityGML* Texture = new TextureCityGML;
+								Texture->Wrap = WrapMode;
+								Texture->Url = Url;
+								Texture->ListPolygons.push_back(Poly);
+								texturesList->push_back(Texture);
+							}
+						}
+					}
+				}
+			}
+			bool test = false;
+			if (Roof->getPolygons().size() > 0)
+			{
+				RoofCO->addGeometry(Roof);
+				Tuile->addCityObject(RoofCO);
+				BuildingCO->insertNode(RoofCO);
+				test = true;
+			}
+			if (Wall->getPolygons().size() > 0)
+			{
+				WallCO->addGeometry(Wall);
+				Tuile->addCityObject(WallCO);
+				BuildingCO->insertNode(WallCO);
+				test = true;
+			}
+			if (test)
+			{
+				Tuile->addCityObject(BuildingCO);
+				Tuile->addCityObjectAsRoot(BuildingCO);
+			}
+		}
+	}
+
+	//delete PolyTile;
+
+	return Tuile;
+}
+
 void GMLCut::cut(std::string & filename, double xmin, double ymin, double xmax, double ymax, std::string outputLocation)
 {
 	std::cout << "[GML CUT MODULE]..........................[START]" << std::endl;

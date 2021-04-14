@@ -107,11 +107,62 @@ void CityGMLTool::createOBJ(std::string & gmlFilename, std::string output) {
 	 }
 }
 
-void CityGMLTool::gmlCut(std::string & gmlFilename, double xmin, double ymin, double xmax, double ymax, std::string output)
+void CityGMLTool::gmlCut(std::string & gmlFilename, double xmin, double ymin, double xmax, double ymax, bool assignOrCut, std::string output)
 {
 	GMLCut* gmlcut = static_cast<GMLCut*>(this->findModuleByName("gmlcut"));
 
-	gmlcut->cut(gmlFilename, xmin, ymin, xmax, ymax, output);
+	if (assignOrCut) {
+		std::vector<TextureCityGML*> texturesList;
+		CityModel* tile = gmlcut->assign(this->cityModel, &texturesList, TVec2d(xmin, ymin), TVec2d(xmax, ymax), gmlFilename);
+
+		std::cout << "[GMLCUT -- ASSIGN]...............................[DONE]" << std::endl;
+
+		/*
+		==============================================
+		::::::::::::::::: DEBUG PART :::::::::::::::::
+		==============================================
+		*/
+
+		std::cout << "city objects roots - size : " << tile->getCityObjectsRoots().size() << std::endl;
+		for (int i = 0; i < tile->getCityObjectsRoots().size(); i++)
+		{
+			std::cout << (tile->getCityObjectsRoots()[i]->getTypeAsString()) << " ";
+			std::cout << tile->getCityObjectsRoots()[i]->getChildCount() << " children ";
+			std::cout << tile->getCityObjectsRoots()[i]->getGeometries().size() << " geometries" << std::endl;
+
+			// If CityObject type is "Bridge", they have no children so we don't need to go deeper
+			if (tile->getCityObjectsRoots()[i]->getType() == CityObjectsType::COT_Bridge) {
+				for (int geo = 0; geo < tile->getCityObjectsRoots()[i]->getGeometries().size(); geo++) {
+
+					const Geometry* geometry = tile->getCityObjectsRoots()[i]->getGeometry(geo);
+					std::cout << "\t " << *geometry << std::endl;
+				}
+			}
+			// If CityObject type is "Building", we need to go deeper
+			else if (tile->getCityObjectsRoots()[i]->getType() == CityObjectsType::COT_Building) {
+				for (int j = 0; j < tile->getCityObjectsRoots()[i]->getChildCount(); j++)
+				{
+					const CityObject* obj = tile->getCityObjectsRoots()[i]->getChild(j);
+
+					std::cout << "\t" << (obj->getTypeAsString()) << " - ";
+					std::cout << obj->getChildCount() << " children ";
+					std::cout << obj->getGeometries().size() << " geometries" << std::endl;
+
+					// If CityObject type is "BuildingPart", we need to go deeper
+					if (obj->getType() == CityObjectsType::COT_BuildingPart) {
+						for (int k = 0; k < obj->getChildren().size(); k++) {
+							std::cout << "\t\t" << obj->getChild(k)->getTypeAsString() << " - ";
+							std::cout << obj->getChild(k)->getChildCount() << " children ";
+							std::cout << obj->getChild(k)->getGeometries().size() << " geometries" << std::endl;
+						}
+					}
+				}
+			}
+		}
+	}
+	else {
+		gmlcut->cut(gmlFilename, xmin, ymin, xmax, ymax, output);
+	}
 }
 
 void CityGMLTool::gmlSplit(std::string & gmlFilename, int nbSplit, std::string output)
