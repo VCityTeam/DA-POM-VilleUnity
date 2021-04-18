@@ -51,7 +51,6 @@ void CityGMLTool::parse(std::string & filename)
 
 	std::cout << "PARSING:.............................:[OK]" << std::endl;
 
-
 	/*
 		==============================================
 		::::::::::::::::: DEBUG PART :::::::::::::::::
@@ -99,7 +98,14 @@ void CityGMLTool::parse(std::string & filename)
 void CityGMLTool::createOBJ(std::string & gmlFilename, std::string output) {
 	 GMLtoOBJ* mOBJconverter = static_cast<GMLtoOBJ*>(this->findModuleByName("objcreator"));
 	 if(cityModel){
-		 mOBJconverter->setGMLFilename(gmlFilename);
+		// Send the lowerBound of CityModel to the GMLtoOBJ module
+		mOBJconverter->setLowerBoundCoord(
+			this->cityModel->getEnvelope().getLowerBound().x,
+			this->cityModel->getEnvelope().getLowerBound().y,
+			this->cityModel->getEnvelope().getLowerBound().z
+		);
+
+		mOBJconverter->setGMLFilename(gmlFilename);
 	 	mOBJconverter->createMyOBJ(*cityModel, output);
 	 }else {
 	 	std::cout << "OBJconverter:.............................:[FAILED]: CityModel NULL" << std::endl;
@@ -110,55 +116,52 @@ void CityGMLTool::createOBJ(std::string & gmlFilename, std::string output) {
 void CityGMLTool::gmlCut(std::string & gmlFilename, double xmin, double ymin, double xmax, double ymax, bool assignOrCut, std::string output)
 {
 	GMLCut* gmlcut = static_cast<GMLCut*>(this->findModuleByName("gmlcut"));
+	GMLtoOBJ* mOBJconverter = static_cast<GMLtoOBJ*>(this->findModuleByName("objcreator"));
+
+	// Send the lowerBound of CityModel to the GMLtoOBJ module
+	mOBJconverter->setLowerBoundCoord(
+		this->cityModel->getEnvelope().getLowerBound().x,
+		this->cityModel->getEnvelope().getLowerBound().y,
+		this->cityModel->getEnvelope().getLowerBound().z
+	);
 
 	if (assignOrCut) {
-		std::vector<TextureCityGML*> texturesList;
-		CityModel* tile = gmlcut->assign(this->cityModel, &texturesList, TVec2d(xmin, ymin), TVec2d(xmax, ymax), gmlFilename);
 
-		std::cout << "[GMLCUT -- ASSIGN]...............................[DONE]" << std::endl;
+		TVec3d Lower = this->cityModel->getEnvelope().getLowerBound();
+		TVec3d Upper = this->cityModel->getEnvelope().getUpperBound();
 
-		/*
-		==============================================
-		::::::::::::::::: DEBUG PART :::::::::::::::::
-		==============================================
-		*/
+		TVec2d MinTile((int)(Lower.x / xmax) * xmax, (int)(Lower.y / ymax) * ymax);
+		TVec2d MaxTile((int)(Upper.x / xmax) * xmax, (int)(Upper.y / ymax) * ymax);
 
-		std::cout << "city objects roots - size : " << tile->getCityObjectsRoots().size() << std::endl;
-		for (int i = 0; i < tile->getCityObjectsRoots().size(); i++)
+		std::cout << Lower << std::endl;
+		std::cout << Upper << std::endl;
+
+		std::cout << MinTile << std::endl;
+		std::cout << MaxTile << std::endl;
+
+		for (int x = (int)MinTile.x; x <= (int)MaxTile.x; x += xmax)
 		{
-			std::cout << (tile->getCityObjectsRoots()[i]->getTypeAsString()) << " ";
-			std::cout << tile->getCityObjectsRoots()[i]->getChildCount() << " children ";
-			std::cout << tile->getCityObjectsRoots()[i]->getGeometries().size() << " geometries" << std::endl;
+			for (int y = (int)MinTile.y; y <= (int)MaxTile.y; y += ymax)
+			{
+				std::vector<TextureCityGML*> texturesList;
+				CityModel* tile = gmlcut->assign(this->cityModel, &texturesList, TVec2d(x, y), TVec2d(x + xmax, y + ymax), gmlFilename);
 
-			// If CityObject type is "Bridge", they have no children so we don't need to go deeper
-			if (tile->getCityObjectsRoots()[i]->getType() == CityObjectsType::COT_Bridge) {
-				for (int geo = 0; geo < tile->getCityObjectsRoots()[i]->getGeometries().size(); geo++) {
+				if (tile->getCityObjectsRoots().size() > 0) {
+					//std::cout << "[GMLCUT - ASSIGN]..................[TILE OK]" << std::endl;
+					std::string outputFolder = "cut_output_obj";
+					std::string filename = outputFolder + "/" + std::to_string((int)(x / xmax)) + "_" + std::to_string((int)(y / ymax)) + ".gml";
 
-					const Geometry* geometry = tile->getCityObjectsRoots()[i]->getGeometry(geo);
-					std::cout << "\t " << *geometry << std::endl;
+					mOBJconverter->setGMLFilename(filename);
+					mOBJconverter->createMyOBJ(*tile, outputFolder);
 				}
-			}
-			// If CityObject type is "Building", we need to go deeper
-			else if (tile->getCityObjectsRoots()[i]->getType() == CityObjectsType::COT_Building) {
-				for (int j = 0; j < tile->getCityObjectsRoots()[i]->getChildCount(); j++)
-				{
-					const CityObject* obj = tile->getCityObjectsRoots()[i]->getChild(j);
-
-					std::cout << "\t" << (obj->getTypeAsString()) << " - ";
-					std::cout << obj->getChildCount() << " children ";
-					std::cout << obj->getGeometries().size() << " geometries" << std::endl;
-
-					// If CityObject type is "BuildingPart", we need to go deeper
-					if (obj->getType() == CityObjectsType::COT_BuildingPart) {
-						for (int k = 0; k < obj->getChildren().size(); k++) {
-							std::cout << "\t\t" << obj->getChild(k)->getTypeAsString() << " - ";
-							std::cout << obj->getChild(k)->getChildCount() << " children ";
-							std::cout << obj->getChild(k)->getGeometries().size() << " geometries" << std::endl;
-						}
-					}
+				else {
+					//std::cout << "[GMLCUT - ASSIGN]..................[TILE EMPTY] " << TVec2d(x, y) << " " << TVec2d(x + xmax, y + ymax) << std::endl;
 				}
+				
 			}
 		}
+
+		std::cout << "[GMLCUT -- ASSIGN]...............................[DONE]" << std::endl;
 	}
 	else {
 		gmlcut->cut(gmlFilename, xmin, ymin, xmax, ymax, output);

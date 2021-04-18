@@ -15,13 +15,13 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 		// Create output directory
 		int cmdResult = system("mkdir output");
 		if (cmdResult == 0) {
-			std::cout << "[DIRECTORY CREATED] : 'output'." << std::endl;
+			//std::cout << "[DIRECTORY CREATED] : 'output'." << std::endl;
 		}
 
 		// Create obj directory
 		cmdResult = system("cd output && mkdir obj");
 		if (cmdResult == 0) {
-			std::cout << "[DIRECTORY CREATED] : 'output/obj'." << std::endl;
+			//std::cout << "[DIRECTORY CREATED] : 'output/obj'." << std::endl;
 
 			outputLocation = "output/obj/" + eraseExtension(this->gmlFilename) + ".obj";
 		}
@@ -52,10 +52,10 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 
 		/* DEBUG LOG */
 		if (cmdResult == 0) { // Directory created
-			std::cout << "[DIRECTORY CREATED]: '" << arg << "'." << std::endl;
+			//std::cout << "[DIRECTORY CREATED]: '" << arg << "'." << std::endl;
 		}
 		else { // Directory exists
-			std::cout << "[DIRECTORY FOUND] '" << arg << "'" << std::endl;
+			//std::cout << "[DIRECTORY FOUND] '" << arg << "'" << std::endl;
 		}
 	}
 }
@@ -63,7 +63,7 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
  void GMLtoOBJ::createMyOBJ(const citygml::CityModel& cityModel, std::string argOutputLoc) {
 
 	processOutputLocation(argOutputLoc);
-	std::cout << "[OUTPUT LOCATION]: '" << outputLocation << "'" << std::endl;
+	//std::cout << "[OUTPUT LOCATION]: '" << outputLocation << "'" << std::endl;
 
 	file = std::ofstream(outputLocation);
 		
@@ -75,14 +75,14 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 
 		vertexCounter = 0;
 
-		boundingX = cityModel.getEnvelope().getLowerBound().x;
-		boundingY = cityModel.getEnvelope().getLowerBound().y;
-		boundingZ = cityModel.getEnvelope().getLowerBound().z;
+		//lowerBoundX = cityModel.getEnvelope().getLowerBound().x;
+		//lowerBoundY = cityModel.getEnvelope().getLowerBound().y;
+		//lowerBoundZ = cityModel.getEnvelope().getLowerBound().z;
 
-		// These lines fixes the double initialization
-		if (boundingX == DBL_MAX) boundingX = 0.0;
-		if (boundingY == DBL_MAX) boundingY = 0.0;
-		if (boundingZ == DBL_MAX) boundingZ = 0.0;
+		//// These lines fixes the double initialization
+		//if (lowerBoundX == DBL_MAX) lowerBoundX = 0.0;
+		//if (lowerBoundY == DBL_MAX) lowerBoundY = 0.0;
+		//if (lowerBoundZ == DBL_MAX) lowerBoundZ = 0.0;
 
 		processCityModel(cityModel);
 
@@ -115,7 +115,7 @@ std::string GMLtoOBJ::eraseExtension(const std::string& filename) {
 
 void GMLtoOBJ::processCityModel(const citygml::CityModel & cityModel)
 {
-	std::cout << "CityModel:[ROOT] " << cityModel.getCityObjectsRoots().size() << " children" << std::endl;
+	//std::cout << "CityModel:[ROOT] " << cityModel.getCityObjectsRoots().size() << " children" << std::endl;
 
 	for (int childIdx = 0; childIdx < cityModel.getCityObjectsRoots().size(); childIdx++) {
 		processCityObject(*cityModel.getCityObjectsRoots()[childIdx]);
@@ -124,7 +124,7 @@ void GMLtoOBJ::processCityModel(const citygml::CityModel & cityModel)
 
 void GMLtoOBJ::processCityObject(const citygml::CityObject & cityObject)
 {
-	std::cout << cityObject.getTypeAsString() << " - " << cityObject.getChildCount() << " children - " << cityObject.getGeometries().size() << " geometries" << std::endl;
+	//std::cout << cityObject.getTypeAsString() << " - " << cityObject.getChildCount() << " children - " << cityObject.getGeometries().size() << " geometries" << std::endl;
 
 	// Check if the current CityObject has any children
 	if (cityObject.getChildCount() == 0) {
@@ -147,14 +147,19 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 {
 	for (int geoIdx = 0; geoIdx < cityObject.getGeometries().size(); geoIdx++) {
 		//std::cout << "\t\t" << *cityObject.getGeometry(geoIdx) << std::endl;
+		//std::cout << "\t\t" << cityObject.getGeometry(geoIdx)->getPolygons().at(0)->getVertices().size() << std::endl;
 
 		for (int polygonIdx = 0; polygonIdx < cityObject.getGeometry(geoIdx)->getPolygons().size(); polygonIdx++) { //faces
 			int size = cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices().size();
 
+			//std::cout << size << std::endl;
+			//std::cout << (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getExteriorRing()->getVertices().size()) << std::endl;
+			//std::cout << std::endl;
+
 			for (int n = 0; n < size; n++) {
-				double mX = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].x) - boundingX;
-				double mY = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].y) - boundingY;
-				double mZ = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].z) - boundingZ;
+				double mX = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].x) - lowerBoundX;
+				double mY = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].y) - lowerBoundY;
+				double mZ = (cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx]->getVertices()[n].z) - lowerBoundZ;
 				//std::cout << "v " << mX << " " << mY << " " << mZ << std::endl;
 
 				file << std::fixed << "v " << mX << " ";
@@ -179,4 +184,11 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 void GMLtoOBJ::setGMLFilename(const std::string & filename)
 {
 	this->gmlFilename = filename;
+}
+
+void GMLtoOBJ::setLowerBoundCoord(double newX, double newY, double newZ)
+{
+	this->lowerBoundX = newX;
+	this->lowerBoundY = newY;
+	this->lowerBoundZ = newZ;
 }

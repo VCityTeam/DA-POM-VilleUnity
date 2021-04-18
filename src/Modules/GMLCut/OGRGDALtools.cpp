@@ -15,7 +15,8 @@ OGRMultiPolygon * GetEnveloppe(OGRMultiPolygon * MP)
 	if (MP->IsEmpty())
 		return nullptr;
 
-	OGRGeometry* ResUnion = new OGRMultiPolygon;
+	OGRGeometry* ResUnion = OGRGeometryFactory::createGeometry(wkbUnknown);
+	//OGRGeometry* ResUnion = new OGRMultiPolygon;
 
 	ResUnion = MP->UnionCascaded();
 
@@ -56,7 +57,8 @@ OGRMultiPolygon * GetEnveloppe(OGRMultiPolygon * MP)
 	}
 	else if (ResUnion->getGeometryType() == OGRwkbGeometryType::wkbPolygon || ResUnion->getGeometryType() == OGRwkbGeometryType::wkbPolygon25D)//La geometry est en fait un seul polygon : un seul batiment
 	{
-		OGRMultiPolygon * GeoCollection = new OGRMultiPolygon;
+		OGRMultiPolygon * GeoCollection = (OGRMultiPolygon*)OGRGeometryFactory::createGeometry(wkbMultiPolygon);
+		//OGRMultiPolygon * GeoCollection = new OGRMultiPolygon;
 		GeoCollection->addGeometryDirectly(ResUnion);
 		return GeoCollection;
 	}

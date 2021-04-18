@@ -24,6 +24,7 @@ public:
 	void processGeometries(const citygml::CityObject& cityObject);
 
 	void setGMLFilename(const std::string & filename);
+	void setLowerBoundCoord(double newX, double newY, double newZ);
 
 private:
 	std::ofstream file;
@@ -31,9 +32,9 @@ private:
 	std::string outputLocation;	// path to ouput location : "output/obj/<filename>" or "/path/to/<filename>"
 
 	int vertexCounter;
-	double boundingX = 0.0;
-	double boundingY = 0.0;
-	double boundingZ = 0.0;
+	double lowerBoundX = 0.0;
+	double lowerBoundY = 0.0;
+	double lowerBoundZ = 0.0;
 };
 
 #endif // !GMLTOOBJ_HPP
