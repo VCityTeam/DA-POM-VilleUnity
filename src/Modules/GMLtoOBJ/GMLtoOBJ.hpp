@@ -8,6 +8,8 @@
 #include "../Module.hpp"
 #include "../../CityModel/CityModel.hpp"
 
+using namespace citygml;
+
 class GMLtoOBJ : public Module
 {
 public:
@@ -27,11 +29,16 @@ public:
 	void setLowerBoundCoord(double newX, double newY, double newZ);
 
 private:
+	void exportMaterials(const std::string& filename);
+
 	std::ofstream file;
 	std::string gmlFilename;
 	std::string outputLocation;	// path to ouput location : "output/obj/<filename>" or "/path/to/<filename>"
 
+	std::map<std::string, std::string> m_materials;
+
 	int vertexCounter;
+	int texturCounter;
 	double lowerBoundX = 0.0;
 	double lowerBoundY = 0.0;
 	double lowerBoundZ = 0.0;
