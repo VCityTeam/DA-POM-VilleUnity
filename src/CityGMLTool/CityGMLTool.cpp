@@ -116,63 +116,40 @@ void CityGMLTool::createOBJ(std::string & gmlFilename, std::string output) {
 void CityGMLTool::gmlCut(std::string & gmlFilename, double xmin, double ymin, double xmax, double ymax, bool assignOrCut, std::string output)
 {
 	GMLCut* gmlcut = static_cast<GMLCut*>(this->findModuleByName("gmlcut"));
-	GMLtoOBJ* mOBJconverter = static_cast<GMLtoOBJ*>(this->findModuleByName("objcreator"));
+	GMLtoOBJ* gmlToObj = static_cast<GMLtoOBJ*>(this->findModuleByName("objcreator"));
 
 	// Send the lowerBound of CityModel to the GMLtoOBJ module
-	mOBJconverter->setLowerBoundCoord(
+	gmlToObj->setLowerBoundCoord(
 		this->cityModel->getEnvelope().getLowerBound().x,
 		this->cityModel->getEnvelope().getLowerBound().y,
 		this->cityModel->getEnvelope().getLowerBound().z
 	);
 
 	if (assignOrCut) {
+		std::vector<TextureCityGML*> texturesList;
+		CityModel* tile = gmlcut->assign(this->cityModel, &texturesList, TVec2d(xmin, ymin), TVec2d(xmin + xmax, ymin + ymax), gmlFilename);
 
-		TVec3d Lower = this->cityModel->getEnvelope().getLowerBound();
-		TVec3d Upper = this->cityModel->getEnvelope().getUpperBound();
+		// Convert to .obj only if there is at least one CityObject
+		if (tile->getCityObjectsRoots().size() > 0) {
+			std::string outputFolder = "cut_output_obj";
+			std::string filename = outputFolder + "/" + std::to_string((int)(xmin / xmax)) + "_" + std::to_string((int)(ymin / ymax)) + ".gml";
 
-		TVec2d MinTile((int)(Lower.x / xmax) * xmax, (int)(Lower.y / ymax) * ymax);
-		TVec2d MaxTile((int)(Upper.x / xmax) * xmax, (int)(Upper.y / ymax) * ymax);
-
-		std::cout << Lower << std::endl;
-		std::cout << Upper << std::endl;
-
-		std::cout << MinTile << std::endl;
-		std::cout << MaxTile << std::endl;
-
-		for (int x = (int)MinTile.x; x <= (int)MaxTile.x; x += xmax)
-		{
-			for (int y = (int)MinTile.y; y <= (int)MaxTile.y; y += ymax)
-			{
-				std::vector<TextureCityGML*> texturesList;
-				CityModel* tile = gmlcut->assign(this->cityModel, &texturesList, TVec2d(x, y), TVec2d(x + xmax, y + ymax), gmlFilename);
-
-				if (tile->getCityObjectsRoots().size() > 0) {
-					//std::cout << "[GMLCUT - ASSIGN]..................[TILE OK]" << std::endl;
-					std::string outputFolder = "cut_output_obj";
-					std::string filename = outputFolder + "/" + std::to_string((int)(x / xmax)) + "_" + std::to_string((int)(y / ymax)) + ".gml";
-
-					mOBJconverter->setGMLFilename(filename);
-					mOBJconverter->createMyOBJ(*tile, outputFolder);
-				}
-				else {
-					//std::cout << "[GMLCUT - ASSIGN]..................[TILE EMPTY] " << TVec2d(x, y) << " " << TVec2d(x + xmax, y + ymax) << std::endl;
-				}
-				
-			}
+			gmlToObj->setGMLFilename(filename);
+			gmlToObj->createMyOBJ(*tile, outputFolder);
 		}
-
-		std::cout << "[GMLCUT -- ASSIGN]...............................[DONE]" << std::endl;
 	}
 	else {
 		gmlcut->cut(gmlFilename, xmin, ymin, xmax, ymax, output);
 	}
 }
 
-void CityGMLTool::gmlSplit(std::string & gmlFilename, int nbSplit, std::string output)
+void CityGMLTool::gmlSplit(std::string & gmlFilename, int tileX, int tileY, std::string output)
 {
-	GMLSplit* gmlsplit = static_cast<GMLSplit*>(this->findModuleByName("gmlsplit"));
+	GMLSplit* gmlSplit = static_cast<GMLSplit*>(this->findModuleByName("gmlsplit"));
+	GMLCut* gmlcut = static_cast<GMLCut*>(this->findModuleByName("gmlcut"));
+	GMLtoOBJ* gmlToObj = static_cast<GMLtoOBJ*>(this->findModuleByName("objcreator"));
 
-	gmlsplit->splitGMLFile(gmlFilename, nbSplit, output);
+	gmlSplit->split(gmlFilename, this->cityModel, gmlcut, gmlToObj, tileX, tileY, output);
 }
 
 void CityGMLTool::setFileName(std::string& filename) {

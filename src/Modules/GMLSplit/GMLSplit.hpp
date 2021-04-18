@@ -3,13 +3,16 @@
 
 #include <iostream>
 #include "../Module.hpp"
+#include "../GMLCut/GMLCut.hpp"
+#include "../GMLtoOBJ/GMLtoOBJ.hpp"
+#include "../../CityModel/CityModel.hpp"
 
 class GMLSplit : public Module
 {
 public:
 	GMLSplit(std::string name);
 
-	void splitGMLFile(std::string & filename, int nbSplit, std::string outputLocation);
+	void split(std::string & filename, citygml::CityModel * cityModel, GMLCut * gmlCut, GMLtoOBJ * gmlToObj, int tileX, int tileY, std::string outputLocation);
 
 private:
 
