@@ -2,4 +2,12 @@
 # Ce fichier .gitignore a été automatiquement créé par Microsoft(R) Visual Studio.
 ################################################################################
 
+.gitignore
 /.vs
+/.vscode
+/x64/Debug
+/CppProperties.json
+*.sln
+*.vcxproj
+*.filters
+*.user
