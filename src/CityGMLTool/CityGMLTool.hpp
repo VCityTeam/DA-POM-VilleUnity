@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <vector>
+
+#include "DataProfile.hpp"
 #include "../Modules/Module.hpp"
 #include "../Modules/XMLParser/XMLParser.hpp"
 #include "../Modules/GMLtoOBJ/GMLtoOBJ.hpp"
@@ -29,6 +31,8 @@ private:
 	std::vector<Module*> modules;
 	CityModel* cityModel;
 	std::string filename;
+
+	DataProfile dataProfile = DataProfile::createDataProfileLyon();
 
 };
 

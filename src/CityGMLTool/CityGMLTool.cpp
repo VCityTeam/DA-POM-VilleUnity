@@ -6,6 +6,14 @@ CityGMLTool::CityGMLTool()
 	this->modules.push_back(new GMLtoOBJ("objcreator"));
 	this->modules.push_back(new GMLCut("gmlcut"));
 	this->modules.push_back(new GMLSplit("gmlsplit"));
+
+	// Init the GMLtoOBJ module with the global bounding box Lower Bound Coordinates (from DataProfile)
+	GMLtoOBJ * gmlToObj = static_cast<GMLtoOBJ*>(this->findModuleByName("objcreator"));
+	gmlToObj->setLowerBoundCoord(
+		this->dataProfile.m_bboxLowerBound.x,
+		this->dataProfile.m_bboxLowerBound.y,
+		this->dataProfile.m_bboxLowerBound.z
+	);
 }
 
 CityGMLTool::~CityGMLTool()
@@ -97,14 +105,8 @@ void CityGMLTool::parse(std::string & filename)
 
 void CityGMLTool::createOBJ(std::string & gmlFilename, std::string output) {
 	 GMLtoOBJ* mOBJconverter = static_cast<GMLtoOBJ*>(this->findModuleByName("objcreator"));
-	 if(cityModel){
-		// Send the lowerBound of CityModel to the GMLtoOBJ module
-		mOBJconverter->setLowerBoundCoord(
-			this->cityModel->getEnvelope().getLowerBound().x,
-			this->cityModel->getEnvelope().getLowerBound().y,
-			this->cityModel->getEnvelope().getLowerBound().z
-		);
 
+	 if(cityModel){
 		mOBJconverter->setGMLFilename(gmlFilename);
 	 	mOBJconverter->createMyOBJ(*cityModel, output);
 	 }else {
@@ -117,13 +119,6 @@ void CityGMLTool::gmlCut(std::string & gmlFilename, double xmin, double ymin, do
 {
 	GMLCut* gmlcut = static_cast<GMLCut*>(this->findModuleByName("gmlcut"));
 	GMLtoOBJ* gmlToObj = static_cast<GMLtoOBJ*>(this->findModuleByName("objcreator"));
-
-	// Send the lowerBound of CityModel to the GMLtoOBJ module
-	gmlToObj->setLowerBoundCoord(
-		this->cityModel->getEnvelope().getLowerBound().x,
-		this->cityModel->getEnvelope().getLowerBound().y,
-		this->cityModel->getEnvelope().getLowerBound().z
-	);
 
 	if (assignOrCut) {
 		std::vector<TextureCityGML*> texturesList;
