@@ -17,9 +17,7 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 	citygml::CityModel* Tuile = new citygml::CityModel();
 
 	OGRPolygon* PolyTile = (OGRPolygon*)OGRGeometryFactory::createGeometry(wkbPolygon);
-	//OGRPolygon* PolyTile = new OGRPolygon;
 	OGRLinearRing* RingTile = (OGRLinearRing*)OGRGeometryFactory::createGeometry(wkbLinearRing);
-	//OGRLinearRing* RingTile = new OGRLinearRing;
 	RingTile->addPoint(minTile.x, minTile.y);
 	RingTile->addPoint(minTile.x, maxTile.y);
 	RingTile->addPoint(maxTile.x, maxTile.y);
@@ -45,7 +43,6 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 				for (citygml::Polygon * PolygonCityGML : Geometry->getPolygons())
 				{
 					OGRLinearRing * OgrRing = (OGRLinearRing*)OGRGeometryFactory::createGeometry(wkbLinearRing);
-					//OGRLinearRing * OgrRing = new OGRLinearRing;
 					for (TVec3d Point : PolygonCityGML->getExteriorRing()->getVertices())
 						OgrRing->addPoint(Point.x, Point.y, Point.z);
 
@@ -54,36 +51,28 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 					if (OgrRing->getNumPoints() < 4)
 					{
 						OGRGeometryFactory::destroyGeometry(OgrRing);
-						//delete OgrRing;
 						continue;
 					}
 
 					OGRPolygon * OgrPoly = (OGRPolygon*)OGRGeometryFactory::createGeometry(wkbPolygon);
-					//OGRPolygon* OgrPoly = new OGRPolygon;
 					OgrPoly->addRingDirectly(OgrRing);
 					if (!OgrPoly->IsValid())
 					{
 						OGRGeometryFactory::destroyGeometry(OgrPoly);
-						//delete OgrPoly;
 						continue;
 					}
 
 					OGRPoint* Centroid = (OGRPoint*)OGRGeometryFactory::createGeometry(wkbPoint);
-					//OGRPoint* Centroid = new OGRPoint;
 					OgrPoly->Centroid(Centroid);
 
 					if (Centroid == nullptr || Centroid->getX() < minTile.x || Centroid->getX() > maxTile.x || Centroid->getY() < minTile.y || Centroid->getY() > maxTile.y) //Si le centroid n'est pas dans la tuile courante, on passe a la suivante.
 					{
 						OGRGeometryFactory::destroyGeometry(OgrPoly);
-						//delete OgrPoly;
 						OGRGeometryFactory::destroyGeometry(Centroid);
-						//delete Centroid;
 						continue;
 					}
 					OGRGeometryFactory::destroyGeometry(Centroid);
-					//delete Centroid;
 					OGRGeometryFactory::destroyGeometry(OgrPoly);
-					//delete OgrPoly;
 
 					std::vector<TVec2f> TexUV = PolygonCityGML->getTexCoords();
 
@@ -102,7 +91,6 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 
 					citygml::Polygon* pol = new citygml::Polygon(*PolygonCityGML);
 					TIN->addPolygon(pol);
-					//TIN->addPolygon(PolygonCityGML->Clone());
 
 					if (HasTexture)
 					{
@@ -153,7 +141,6 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 			citygml::Geometry* Ground = new citygml::Geometry(Name + "_GroundGeometry", citygml::GT_Ground, 2);
 
 			OGRMultiPolygon* Building = (OGRMultiPolygon*)OGRGeometryFactory::createGeometry(wkbMultiPolygon);//Version OGR du batiment qui va etre remplie
-			//OGRMultiPolygon* Building = new OGRMultiPolygon;//Version OGR du batiment qui va etre remplie
 
 			// Not very elegant ... (seen only in 'LYON_1ER_BATI_2015.gml' Building with one BuildingPart)
 			if (obj->getChildren().at(0)->getType() == citygml::COT_BuildingPart) {
@@ -168,7 +155,6 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 						for (citygml::Polygon * PolygonCityGML : Geometry->getPolygons()) //Pour chaque polygone
 						{
 							OGRLinearRing * OgrRing = (OGRLinearRing*)OGRGeometryFactory::createGeometry(wkbLinearRing);
-							//OGRLinearRing * OgrRing = new OGRLinearRing;
 							for (TVec3d Point : PolygonCityGML->getExteriorRing()->getVertices())
 								OgrRing->addPoint(Point.x, Point.y, Point.z);
 
@@ -176,7 +162,6 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 							if (OgrRing->getNumPoints() > 3)
 							{
 								OGRPolygon* OgrPoly = (OGRPolygon*)OGRGeometryFactory::createGeometry(wkbPolygon);
-								//OGRPolygon * OgrPoly = new OGRPolygon;
 								OgrPoly->addRingDirectly(OgrRing);
 								if (OgrPoly->IsValid())
 								{
@@ -184,7 +169,6 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 								}
 							}
 							else
-								//delete OgrRing;
 								OGRGeometryFactory::destroyGeometry(OgrRing);
 						}
 					}
@@ -199,25 +183,19 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 			if (Enveloppe->IsEmpty() || !Enveloppe->IsValid())
 			{
 				OGRGeometryFactory::destroyGeometry(Enveloppe);
-				//delete Enveloppe;
 				continue;
 			}
 			
 			OGRPoint* Centroid = (OGRPoint*)OGRGeometryFactory::createGeometry(wkbPoint);
-			//OGRPoint* Centroid = new OGRPoint;
 			Enveloppe->Centroid(Centroid);
 			if (Centroid->getX() < minTile.x || Centroid->getX() > maxTile.x || Centroid->getY() < minTile.y || Centroid->getY() > maxTile.y) //Si le centroid n'est pas dans la tuile courante, on passe a la suivante.
 			{
 				OGRGeometryFactory::destroyGeometry(Enveloppe);
-				//delete Enveloppe;
 				OGRGeometryFactory::destroyGeometry(Centroid);
-				//delete Centroid;
 				continue;
 			}
 			OGRGeometryFactory::destroyGeometry(Centroid);
-			//delete Centroid;
 			OGRGeometryFactory::destroyGeometry(Enveloppe);
-			//delete Enveloppe;
 
 			for (citygml::CityObject* object : obj->getChildren())//On parcourt les objets (Wall, Roof, ...) du batiment
 			{
@@ -241,18 +219,15 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 
 							citygml::Polygon* pol = new citygml::Polygon(*PolygonCityGML);
 							Roof->addPolygon(pol);
-							//Roof->addPolygon(PolygonCityGML->Clone());
 						}
 
 						else if (object->getType() == citygml::COT_WallSurface) {
 							citygml::Polygon* pol = new citygml::Polygon(*PolygonCityGML);
 							Wall->addPolygon(pol);
-							//Wall->addPolygon(PolygonCityGML->Clone());
 						}
 						else if (object->getType() == citygml::COT_GroundSurface) {
 							citygml::Polygon* pol = new citygml::Polygon(*PolygonCityGML);
 							Ground->addPolygon(pol);
-							//Ground->addPolygon(PolygonCityGML->Clone());
 						}
 
 						if (HasTexture)
@@ -319,7 +294,6 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 			citygml::Geometry* BridgeGeo = new citygml::Geometry(Name + "_BridgeGeometry", citygml::GT_Unknown, 2);
 
 			OGRMultiPolygon* Bridge = (OGRMultiPolygon*)OGRGeometryFactory::createGeometry(wkbMultiPolygon);//Version OGR du batiment qui va etre remplie
-			//OGRMultiPolygon* Bridge = new OGRMultiPolygon;//Version OGR du batiment qui va etre remplie
 
 			// For Bridge node type, we go through Geometries directly
 			for (citygml::Geometry* Geometry : obj->getGeometries()) //pour chaque geometrie
@@ -327,7 +301,6 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 				for (citygml::Polygon * PolygonCityGML : Geometry->getPolygons()) //Pour chaque polygone
 				{
 					OGRLinearRing * OgrRing = (OGRLinearRing*)OGRGeometryFactory::createGeometry(wkbLinearRing);
-					//OGRLinearRing * OgrRing = new OGRLinearRing;
 					for (TVec3d Point : PolygonCityGML->getExteriorRing()->getVertices())
 						OgrRing->addPoint(Point.x, Point.y, Point.z);
 
@@ -335,7 +308,6 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 					if (OgrRing->getNumPoints() > 3)
 					{
 						OGRPolygon* OgrPoly = (OGRPolygon*)OGRGeometryFactory::createGeometry(wkbPolygon);
-						//OGRPolygon * OgrPoly = new OGRPolygon;
 						OgrPoly->addRingDirectly(OgrRing);
 						if (OgrPoly->IsValid())
 						{
@@ -344,7 +316,6 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 					}
 					else
 						OGRGeometryFactory::destroyGeometry(OgrRing);
-						//delete OgrRing;
 				}
 			}
 
@@ -356,25 +327,19 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 			if (Enveloppe->IsEmpty() || !Enveloppe->IsValid())
 			{
 				OGRGeometryFactory::destroyGeometry(Enveloppe);
-				//delete Enveloppe;
 				continue;
 			}
 
 			OGRPoint* Centroid = (OGRPoint*)OGRGeometryFactory::createGeometry(wkbPoint);
-			//OGRPoint* Centroid = new OGRPoint;
 			Enveloppe->Centroid(Centroid);
 			if (Centroid->getX() < minTile.x || Centroid->getX() > maxTile.x || Centroid->getY() < minTile.y || Centroid->getY() > maxTile.y) //Si le centroid n'est pas dans la tuile courante, on passe a la suivante.
 			{
 				OGRGeometryFactory::destroyGeometry(Enveloppe);
-				//delete Enveloppe;
 				OGRGeometryFactory::destroyGeometry(Centroid);
-				//delete Centroid;
 				continue;
 			}
 			OGRGeometryFactory::destroyGeometry(Centroid);
-			//delete Centroid;
 			OGRGeometryFactory::destroyGeometry(Enveloppe);
-			//delete Enveloppe;
 
 			for (citygml::Geometry* Geometry : obj->getGeometries()) //pour chaque geometrie
 			{
@@ -440,7 +405,6 @@ citygml::CityModel * GMLCut::assign(citygml::CityModel * model, std::vector<Text
 	}
 
 	OGRGeometryFactory::destroyGeometry(PolyTile);
-	//delete PolyTile;
 
 	return Tuile;
 }

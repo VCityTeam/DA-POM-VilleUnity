@@ -13,8 +13,6 @@ CLI::CLI(int argc, char* argv[])
 
 	_citygmltool = new CityGMLTool();
 
-	_cliParams.push_back(CLIParam("--help", "Prints usage."));
-	_cliParams.push_back(CLIParam("--debug", "Turn on debug mode."));
 	_cliParams.push_back(CLIParam("--obj", "Convert a CityGML file into OBJ file.", std::vector<bool>({ 0 })));
 	_cliParams.push_back(CLIParam("--cut", "Cut a CityGML file into smaller CityGML file or OBJ file.", std::vector<bool>({ 1, 1, 1, 1, 0, 0 })));
 	_cliParams.push_back(CLIParam("--split", "Split a CityGML file into multiple OBJ files.", std::vector<bool>({ 1, 1, 0 })));

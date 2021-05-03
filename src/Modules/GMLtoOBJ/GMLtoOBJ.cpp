@@ -49,21 +49,12 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 
 		int cmdResult = system(cmd.c_str());
 		outputLocation = arg.append(eraseExtension(this->gmlFilename).append(".obj"));
-
-		/* DEBUG LOG */
-		if (cmdResult == 0) { // Directory created
-			//std::cout << "[DIRECTORY CREATED]: '" << arg << "'." << std::endl;
-		}
-		else { // Directory exists
-			//std::cout << "[DIRECTORY FOUND] '" << arg << "'" << std::endl;
-		}
 	}
 }
 
  void GMLtoOBJ::createMyOBJ(const citygml::CityModel& cityModel, std::string argOutputLoc) {
 
 	processOutputLocation(argOutputLoc);
-	//std::cout << "[OUTPUT LOCATION]: '" << outputLocation << "'" << std::endl;
 
 	file = std::ofstream(outputLocation);
 		
@@ -74,18 +65,9 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 		std::string name = eraseExtension(outputLocation);
 		file << "mtllib " << name << ".mtl" << std::endl << std::endl;
 		file << "o " << name << std::endl << std::endl;
-		//file << "usemtl Murs" << std::endl;
+
 		vertexCounter = 1;
 		texturCounter = 0;
-
-		//lowerBoundX = cityModel.getEnvelope().getLowerBound().x;
-		//lowerBoundY = cityModel.getEnvelope().getLowerBound().y;
-		//lowerBoundZ = cityModel.getEnvelope().getLowerBound().z;
-
-		//// These lines fixes the double initialization
-		//if (lowerBoundX == DBL_MAX) lowerBoundX = 0.0;
-		//if (lowerBoundY == DBL_MAX) lowerBoundY = 0.0;
-		//if (lowerBoundZ == DBL_MAX) lowerBoundZ = 0.0;
 
 		processCityModel(cityModel);
 
@@ -120,8 +102,6 @@ std::string GMLtoOBJ::eraseExtension(const std::string& filename) {
 
 void GMLtoOBJ::processCityModel(const citygml::CityModel & cityModel)
 {
-	//std::cout << "CityModel:[ROOT] " << cityModel.getCityObjectsRoots().size() << " children" << std::endl;
-
 	for (int childIdx = 0; childIdx < cityModel.getCityObjectsRoots().size(); childIdx++) {
 		processCityObject(*cityModel.getCityObjectsRoots()[childIdx]);
 	}
@@ -129,8 +109,6 @@ void GMLtoOBJ::processCityModel(const citygml::CityModel & cityModel)
 
 void GMLtoOBJ::processCityObject(const citygml::CityObject & cityObject)
 {
-	//std::cout << cityObject.getTypeAsString() << " - " << cityObject.getChildCount() << " children - " << cityObject.getGeometries().size() << " geometries" << std::endl;
-
 	// Check if the current CityObject has any children
 	if (cityObject.getChildCount() == 0) {
 		// We are at the end of the tree
@@ -153,13 +131,10 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 	file << "g " << cityObject.getTypeAsString() << "\n";
 
 	for (int geoIdx = 0; geoIdx < cityObject.getGeometries().size(); geoIdx++) {
-		//std::cout << "\t\t" << *cityObject.getGeometry(geoIdx) << std::endl;
-		
 		for (int polygonIdx = 0; polygonIdx < cityObject.getGeometry(geoIdx)->getPolygons().size(); polygonIdx++) { //faces
 
 			citygml::Polygon * poly = cityObject.getGeometry(geoIdx)->getPolygons()[polygonIdx];
 
-			//std::map<std::string, std::string> m_materials;
 			if (poly->getTexture()) {
 				std::string mat = poly->getTexture()->getUrl();
 				mat = mat.substr(mat.find_last_of('/') + 1);
@@ -168,23 +143,11 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 				m_materials[mat] = poly->getTexture()->getUrl(); // add material to map, will be used by exportMaterials
 			}
 
-			//file << "g " << poly->getId() << "\n\n";
-			
 			int size = poly->getVertices().size();
 			for (const TVec3d& v : poly->getVertices())
 			{
 				file << std::fixed << "v " << v.y - lowerBoundY << " " << v.z - lowerBoundZ << " " << v.x - lowerBoundX << "\n";
 			}
-			/*for (int n = 0; n < size; n++) {
-				double mX = (poly->getVertices()[n].x) - boundingX;
-				double mY = (poly->getVertices()[n].y) - boundingY;
-				double mZ = (poly->getVertices()[n].z) - boundingZ;
-				//std::cout << "v " << mX << " " << mY << " " << mZ << std::endl;
-
-				file << std::fixed << "v " << mY << " ";
-				file << std::fixed << mZ << " ";
-				file << std::fixed << mX << std::endl;
-			}*/
 			for (const TVec3f& vn : poly->getNormals())
 			{
 				file << "vn " << vn.x << " " << vn.y << " " << vn.z << "\n";
@@ -194,23 +157,6 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 			{
 				file << "vt " << vt.x << " " << vt.y << "\n";
 			}
-			/*for (int coords = 0; coords < poly->getTexCoords().size(); coords++) { // cordonnées de textures
-				float vtX = poly->getTexCoords()[coords].x;
-				float vtY = poly->getTexCoords()[coords].y;
-				file << "vt " << vtX << " " << vtY << std::endl;
-				//std::cout << "TEXTURES " << vtX << " " << vtY << std::endl;
-			}*/
-			//file << "s off" << std::endl;
-
-			/*vertexCounter += size;
-			if (size != 0) {
-				file << "f";
-				for (int m = 0; m < size; m++) {
-					int temp = (vertexCounter - ((size - 1) - m));
-					file << " " << temp << "/" << temp << "/" << temp;
-				}
-				file << std::endl << std::endl;
-			}*/
 
 			if (size != 0) {
 				for (int ind = 0; ind < poly->getIndices().size(); ind += 3) { 
