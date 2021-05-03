@@ -26,11 +26,11 @@ Tesselator::Tesselator(void)
 {
 	_tobj = gluNewTess();
 
-	/*gluTessCallback(_tobj, GLU_TESS_VERTEX_DATA, (GLU_TESS_CALLBACK)&vertexCallback);
+	gluTessCallback(_tobj, GLU_TESS_VERTEX_DATA, (GLU_TESS_CALLBACK)&vertexCallback);
 	gluTessCallback(_tobj, GLU_TESS_BEGIN_DATA, (GLU_TESS_CALLBACK)&beginCallback);
 	gluTessCallback(_tobj, GLU_TESS_END_DATA, (GLU_TESS_CALLBACK)&endCallback);
 	gluTessCallback(_tobj, GLU_TESS_COMBINE_DATA, (GLU_TESS_CALLBACK)&combineCallback);
-	gluTessCallback(_tobj, GLU_TESS_ERROR_DATA, (GLU_TESS_CALLBACK)&errorCallback);*/
+	gluTessCallback(_tobj, GLU_TESS_ERROR_DATA, (GLU_TESS_CALLBACK)&errorCallback);
 }
 
 void Tesselator::init(size_t verticesCount, const TVec3d& normal, GLenum winding_rule)

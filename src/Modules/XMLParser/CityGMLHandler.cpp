@@ -825,7 +825,7 @@ void CityGMLHandler::endElement(const std::string& name)
 	case NODETYPE(Polygon):
 		if (_currentGeometry && _currentPolygon)
 		{
-			//_currentPolygon->finish( ( nodeType == NODETYPE( Triangle ) ) ? false : _params.tesselate );							
+			//_currentPolygon->finish( ( nodeType == NODETYPE( Triangle ) ) ? false : _params.tesselate );		
 			_currentGeometry->addPolygon(_currentPolygon);
 		}
 		_currentPolygon = 0;

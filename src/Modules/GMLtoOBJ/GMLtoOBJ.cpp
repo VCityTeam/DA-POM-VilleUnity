@@ -75,7 +75,7 @@ void GMLtoOBJ::processOutputLocation(std::string & arg)
 		file << "mtllib " << name << ".mtl" << std::endl << std::endl;
 		file << "o " << name << std::endl << std::endl;
 		//file << "usemtl Murs" << std::endl;
-		vertexCounter = 0;
+		vertexCounter = 1;
 		texturCounter = 0;
 
 		//lowerBoundX = cityModel.getEnvelope().getLowerBound().x;
@@ -201,7 +201,8 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 				//std::cout << "TEXTURES " << vtX << " " << vtY << std::endl;
 			}*/
 			//file << "s off" << std::endl;
-			vertexCounter += size;
+
+			/*vertexCounter += size;
 			if (size != 0) {
 				file << "f";
 				for (int m = 0; m < size; m++) {
@@ -209,7 +210,19 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 					file << " " << temp << "/" << temp << "/" << temp;
 				}
 				file << std::endl << std::endl;
+			}*/
+
+			if (size != 0) {
+				for (int ind = 0; ind < poly->getIndices().size(); ind += 3) { 
+					file << "f " << vertexCounter + poly->getIndices()[ind + 0] << "/" << vertexCounter + poly->getIndices()[ind + 0] << "/" << vertexCounter + poly->getIndices()[ind + 0]
+						 << " "  << vertexCounter + poly->getIndices()[ind + 1] << "/" << vertexCounter + poly->getIndices()[ind + 1] << "/" << vertexCounter + poly->getIndices()[ind + 1]
+						 << " "  << vertexCounter + poly->getIndices()[ind + 2] << "/" << vertexCounter + poly->getIndices()[ind + 2] << "/" << vertexCounter + poly->getIndices()[ind + 2]
+						 << "\n\n";
+
+				}
 			}
+
+			vertexCounter += poly->getVertices().size();
 		}
 	}
 }

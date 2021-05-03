@@ -90,6 +90,14 @@ void CityGMLTool::parse(std::string & filename)
 	//			std::cout << obj->getChildCount() << " children ";
 	//			std::cout << obj->getGeometries().size() << " geometries" << std::endl;
 
+	//			for (citygml::Geometry * geo : obj->getGeometries()) {
+	//				for (citygml::Polygon * poly : geo->getPolygons()) {
+	//					for (int indice : poly->getIndices()) {
+	//						std::cout << indice << std::endl;
+	//					}
+	//				}
+	//			}
+
 	//			// If CityObject type is "BuildingPart", we need to go deeper
 	//			if (obj->getType() == CityObjectsType::COT_BuildingPart) {
 	//				for (int k = 0; k < obj->getChildren().size(); k++) {

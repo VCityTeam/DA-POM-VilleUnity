@@ -37,7 +37,7 @@ private:
 
 	std::map<std::string, std::string> m_materials;
 
-	int vertexCounter;
+	int vertexCounter = 1;
 	int texturCounter;
 	double lowerBoundX = 0.0;
 	double lowerBoundY = 0.0;
