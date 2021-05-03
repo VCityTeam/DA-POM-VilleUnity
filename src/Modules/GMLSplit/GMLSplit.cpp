@@ -12,13 +12,6 @@ void GMLSplit::split(std::string & filename, citygml::CityModel * cityModel, GML
 
 	//TODO: process output location
 
-	// Send the lowerBound of CityModel to the GMLtoOBJ module
-	gmlToObj->setLowerBoundCoord(
-		cityModel->getEnvelope().getLowerBound().x,
-		cityModel->getEnvelope().getLowerBound().y,
-		cityModel->getEnvelope().getLowerBound().z
-	);
-
 	TVec3d Lower = cityModel->getEnvelope().getLowerBound();
 	TVec3d Upper = cityModel->getEnvelope().getUpperBound();
 
