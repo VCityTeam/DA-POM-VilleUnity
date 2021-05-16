@@ -69,7 +69,7 @@ This repository contains 4 modules :
 
 ## 👷 Contributors
 
-* #### 🎓 [POM M1 2020-2021 (Student Project)] - *From 04/02/2021 to 27/05/2021* - [:memo: Project Specification](https://github.com/VCityTeam/DA-POM/blob/main/cdc_43_CHEMOUL_11500326_COMBAT_11608446.pdf)
+* #### 🎓 [POM M1 2020-2021 (Student Project)] - *From 04/02/2021 to 27/05/2021* - [:memo: Project Specification](https://github.com/VCityTeam/DA-POM-VilleUnity/blob/main/cdc_43_CHEMOUL_11500326_COMBAT_11608446.pdf)
   * **[Victor COMBAT](https://github.com/VictorCombat)**
   * **[Mickael CHEMOUL](https://github.com/MickaelCH)**
 
