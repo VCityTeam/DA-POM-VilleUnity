@@ -6,8 +6,8 @@ This module can convert a **CityModel** (data structure obtained after parsing a
 
 Texture processing is supported through the creation of an [.MTL](https://fr.wikipedia.org/wiki/Material_Template_Library) file.
 
-* More information about OBJ file format in wiki : [OBJ file format](https://github.com/VCityTeam/DA-POM-VilleUnity/wiki/OBJ_format)
-* More information about this module in wiki : [GMLtoOBJ](https://github.com/VCityTeam/DA-POM-VilleUnity/wiki/Module_GMLtoOBJ)
+* **More information about OBJ file format in wiki : [OBJ file format](https://github.com/VCityTeam/DA-POM-VilleUnity/wiki/OBJ_format)**
+* **More information about this module in wiki : [GMLtoOBJ](https://github.com/VCityTeam/DA-POM-VilleUnity/wiki/Module_GMLtoOBJ)**
 
 
 ## 🔨 Install
