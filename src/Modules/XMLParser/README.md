@@ -8,6 +8,8 @@ This module parses a **CityGML** file and produces a data structure called **Cit
 
 ### Dependencies
 
+* External lib [LibXML2](http://www.xmlsoft.org/)
+  * See **[/lib/libxml2-2.9.3/](/lib/libxml2-2.9.3/)** for the source files, **.dll** and **.lib** files
 * `Module.hpp/.cpp` base class
 * [`CityModel`](../../CityModel/) obtained after parsing with [`XMLParser`](../XMLParser/) module
 
