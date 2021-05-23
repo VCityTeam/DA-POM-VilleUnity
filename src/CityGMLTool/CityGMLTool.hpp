@@ -4,10 +4,10 @@
 #include <iostream>
 #include <vector>
 
-#include "DataProfile.hpp"
 #include "../Modules/Module.hpp"
 #include "../Modules/XMLParser/XMLParser.hpp"
 #include "../Modules/GMLtoOBJ/GMLtoOBJ.hpp"
+#include "../Modules/GMLtoOBJ/DataProfile.hpp"
 #include "../Modules/GMLCut/GMLCut.hpp"
 #include "../Modules/GMLSplit/GMLSplit.hpp"
 
