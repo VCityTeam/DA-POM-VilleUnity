@@ -67,6 +67,12 @@ This repository contains 4 modules :
 <hr>
 </details>
 
+
+## ❓ HowTo
+
+* ### [Install](./documentation/HowTo/Install.md)
+* ### [Add a Module](./documentation/HowTo/AddAModule.md)
+
 ## 👷 Contributors
 
 * #### 🎓 [POM M1 2020-2021 (Student Project)] - *From 04/02/2021 to 27/05/2021* - [:memo: Project Specification](https://github.com/VCityTeam/DA-POM-VilleUnity/blob/main/cdc_43_CHEMOUL_11500326_COMBAT_11608446.pdf)
@@ -77,11 +83,6 @@ This repository contains 4 modules :
 
 * Gilles GESQUIERE (Gilles.Gesquiere@univ-lyon2.fr)
 * Corentin GAUTIER (corentin.gautier@universite-lyon.fr)
-
-## ❓ HowTo
-
-* ### [Install](./documentation/HowTo/Install.md)
-* ### [Add a Module](./documentation/HowTo/AddAModule.md)
 
 
 ## 🌟 Showcase
