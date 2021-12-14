@@ -62,14 +62,14 @@ DataProfile DataProfile::createDataProfileNone()
 DataProfile DataProfile::createDataProfileLyon()
 {
 	DataProfile dp;
-	dp.m_offset.x = 1837500.0;//1833000.0;//1837500.0;//1840000.0;
-	dp.m_offset.y = 5169000.0;//5166000.0;//5169000.0;//5172500.0;
+	//dp.m_offset.x = 1837500.0;//1833000.0;//1837500.0;//1840000.0;
+	//dp.m_offset.y = 5169000.0;//5166000.0;//5169000.0;//5172500.0;
 
-	dp.m_bboxLowerBound.x = 1800000.0;//1837500.0;//1840000.0;
-	dp.m_bboxLowerBound.y = 5100000.0;//5169000.0;//5172500.0;
+	//dp.m_bboxLowerBound.x = 1800000.0;//1837500.0;//1840000.0;
+	//dp.m_bboxLowerBound.y = 5100000.0;//5169000.0;//5172500.0;
 
-	dp.m_bboxUpperBound.x = 1851000;//1849500.0;
-	dp.m_bboxUpperBound.y = 5184500;//5180500.0;
+	//dp.m_bboxUpperBound.x = 1851000;//1849500.0;
+	//dp.m_bboxUpperBound.y = 5184500;//5180500.0;
 
 	dp.m_xStep = 500;
 	dp.m_yStep = 500;

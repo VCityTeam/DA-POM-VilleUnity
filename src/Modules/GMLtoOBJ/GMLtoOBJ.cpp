@@ -146,7 +146,12 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 			int size = poly->getVertices().size();
 			for (const TVec3d& v : poly->getVertices())
 			{
-				file << std::fixed << "v " << v.y - lowerBoundY << " " << v.z - lowerBoundZ << " " << v.x - lowerBoundX << "\n";
+				//file << std::fixed << "v " << v.y - lowerBoundY << " " << v.z - lowerBoundZ << " " << v.x - lowerBoundX << "\n";
+				file << std::fixed << "v "
+					<< v.x - lowerBoundX << " "
+					<< v.y - lowerBoundY << " "
+					<< v.z - lowerBoundZ
+				<< "\n";
 			}
 			for (const TVec3f& vn : poly->getNormals())
 			{
@@ -159,7 +164,7 @@ void GMLtoOBJ::processGeometries(const citygml::CityObject & cityObject)
 			}
 
 			if (size != 0) {
-				for (int ind = 0; ind < poly->getIndices().size(); ind += 3) { 
+				for (int ind = 0; ind < poly->getIndices().size(); ind += 3) {
 					file << "f " << vertexCounter + poly->getIndices()[ind + 0] << "/" << vertexCounter + poly->getIndices()[ind + 0] << "/" << vertexCounter + poly->getIndices()[ind + 0]
 						 << " "  << vertexCounter + poly->getIndices()[ind + 1] << "/" << vertexCounter + poly->getIndices()[ind + 1] << "/" << vertexCounter + poly->getIndices()[ind + 1]
 						 << " "  << vertexCounter + poly->getIndices()[ind + 2] << "/" << vertexCounter + poly->getIndices()[ind + 2] << "/" << vertexCounter + poly->getIndices()[ind + 2]
